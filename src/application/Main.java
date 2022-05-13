@@ -19,7 +19,8 @@ public class Main extends Application {
 		this.primaryStage.setTitle("NFT Dashboard");
 		
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("view/Dashboard.fxml"));
+		//loader.setLocation(Main.class.getResource("view/Dashboard.fxml"));
+		loader.setLocation(Main.class.getResource("view/GUI.fxml"));
 		mainLayout = loader.load();
 		Scene scene = new Scene(mainLayout);
 		primaryStage.setScene(scene);
