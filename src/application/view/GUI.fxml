@@ -16,7 +16,7 @@
    <center>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0">
          <children>
-            <VBox layoutX="143.0" layoutY="211.0" prefHeight="224.0" prefWidth="602.0">
+            <VBox layoutX="143.0" layoutY="252.0" prefHeight="224.0" prefWidth="602.0">
                <children>
                   <TableView fx:id="CollectionTable" prefHeight="266.0" prefWidth="602.0">
                     <columns>
@@ -28,13 +28,13 @@
                   </TableView>
                </children>
             </VBox>
-            <Button fx:id="AddCollectionBtn" layoutX="143.0" layoutY="175.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="25.0" prefWidth="118.0" text="+ Add collection" />
-            <Text layoutX="342.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Button fx:id="AddCollectionBtn" layoutX="577.0" layoutY="178.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="25.0" prefWidth="118.0" text="+ Add collection" />
+            <Text layoutX="277.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="24.0" />
                </font>
             </Text>
-            <Text layoutX="233.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Top 1000 NFT Collections" textAlignment="CENTER" wrappingWidth="468.13671875">
+            <Text layoutX="233.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Top 100 NFT Collections" textAlignment="CENTER" wrappingWidth="468.13671875">
                <font>
                   <Font size="36.0" />
                </font>
@@ -104,8 +104,14 @@
                </font>
             </Text>
             <TextField fx:id="SearchTextInput" layoutX="565.0" layoutY="141.0" onAction="#searchCollectionFunc" prefHeight="25.0" prefWidth="176.0" />
-            <Button fx:id="SaveListBtn" layoutX="791.0" layoutY="249.0" mnemonicParsing="false" onAction="#saveListFunc" prefHeight="42.0" prefWidth="73.0" text="Save List" textAlignment="RIGHT" />
-            <Button fx:id="UploadListBtn" layoutX="793.0" layoutY="341.0" mnemonicParsing="false" onAction="#uploadListFunc" text="Upload list" />
+            <Button fx:id="SaveListBtn" layoutX="791.0" layoutY="334.0" mnemonicParsing="false" onAction="#saveListFunc" prefHeight="42.0" prefWidth="73.0" text="Save List" textAlignment="RIGHT" />
+            <Button fx:id="UploadListBtn" layoutX="793.0" layoutY="396.0" mnemonicParsing="false" onAction="#uploadListFunc" text="Upload list" />
+            <TextField layoutX="410.0" layoutY="178.0" />
+            <Text layoutX="186.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
    </center>
