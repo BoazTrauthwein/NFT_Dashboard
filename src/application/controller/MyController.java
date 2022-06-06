@@ -315,26 +315,37 @@ public class MyController implements Initializable {
 	{
 		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
 	    
-	    int max = 100;
-	    int min = 1;
+	   // int max = 100;
+	   // int min = 1;
 
         for (int i = 0; i < arrCollection.size(); i++) {
             String collName = (String)((JSONObject)arrCollection.get(i)).get("name");
             String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
             
-            System.out.println("https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol);
             String tmp = "https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol;
-            JSONObject objSymbol = getJSONObject(tmp);
-            
-            long floorPrice = 0;
+            //System.out.println(tmp);
+            JSONObject objSymbolMagiceden = getJSONObject(tmp);
+            long floorPriceMagiceden = 0;
             try {
-            	floorPrice = (long)objSymbol.get("floorPrice"); 
+            	floorPriceMagiceden = (long)objSymbolMagiceden.get("floorPrice"); 
 			} catch (Exception e) {
-				floorPrice = 0;
+				floorPriceMagiceden = -1;
 			}
             
-            int num2 = (int)(Math.random()*(max-min+1)+min);  
-            CollectionTable.getItems().add(new Collection(collName, num2, floorPrice,  0));
+            String urlOpensea = "https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats";
+            System.out.println(urlOpensea);
+            JSONObject objSymbolOpensea = getJSONObject(urlOpensea);
+            long floorPriceOpensea = 0;
+            try {
+            	JSONObject statsOpensea = (JSONObject)objSymbolOpensea.get("stats");
+            	floorPriceOpensea = (long)statsOpensea.get("floor_Price"); 
+			} catch (Exception e) {
+				floorPriceOpensea = -1;
+			}
+            System.out.println("Opensea floor price: " + floorPriceOpensea);
+            
+            //int num2 = (int)(Math.random()*(max-min+1)+min);  
+            CollectionTable.getItems().add(new Collection(collName, floorPriceOpensea, floorPriceMagiceden,  0));
             //System.out.println(collName);
         }
 	}
