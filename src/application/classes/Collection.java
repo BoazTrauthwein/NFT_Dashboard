@@ -39,6 +39,12 @@ public class Collection {
 	public void setDiff(float diff) {
 		this.diff = diff;
 	}
+
+	@Override
+	public String toString() {
+		return "Collection [name=" + name + ", openseaSol=" + openseaSol + ", magicEdenSol=" + magicEdenSol + ", diff="
+				+ diff + "]";
+	}
 	
 	
 	
