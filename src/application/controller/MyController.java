@@ -277,12 +277,6 @@ public class MyController implements Initializable {
     	            }
     	            CollectionTable.setItems(subentries);
     	        });
-    	
-    	
-    	
-    	
-
-
     }
     
     public void addCollectionFunc(ActionEvent event) throws Exception {
@@ -315,8 +309,8 @@ public class MyController implements Initializable {
 	{
 		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
 	    
-	   // int max = 100;
-	   // int min = 1;
+	    int max = 100;
+	    int min = 1;
 
         for (int i = 0; i < arrCollection.size(); i++) {
             String collName = (String)((JSONObject)arrCollection.get(i)).get("name");
