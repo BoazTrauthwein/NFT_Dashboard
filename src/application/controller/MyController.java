@@ -1,6 +1,8 @@
 package application.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,8 +14,25 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -24,6 +43,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import application.classes.Collection;
 import application.classes.HttpRequest;
@@ -33,6 +54,8 @@ import application.classes.HttpRequest;
 public class MyController implements Initializable {
 
 	HttpRequest request;
+	private boolean isUpload;
+	private JSONArray uploadedCollection;
 	
 
     @FXML
@@ -128,13 +151,74 @@ public class MyController implements Initializable {
     
 
 	}
-    
-    public void saveListFunc(ActionEvent event)  {
-    	
-    
+    // Save a JSON file out of table of collections
+    public void saveListFunc(ActionEvent event)  {    	
+    	 JFileChooser chooser = new JFileChooser();
+    	 chooser.setCurrentDirectory(new File("/home/me/Documents"));	// the default folder that will show when opened 
+    	 int retrival = chooser.showSaveDialog(null);	// only save if approved saving by user
+    	 if (retrival == JFileChooser.APPROVE_OPTION) {
+    		 try(FileWriter fw = new FileWriter(chooser.getSelectedFile()+".json")) { //add .json to define json file type
+    			    fw.write(CollectionTable.getItems().toString());	// save table data in the file
+    			} catch (IOException ex) {}
+    	 }
     }
     
+    // Upload to table from an existing JSON file from system explorer
     public void uploadListFunc(ActionEvent event) throws Exception {
+    	//FileChooserSample ChooseJSON = new FileChooserSample();
+    	//ChooseJSON.launch(null);
+    	
+    	final JFileChooser fc = new JFileChooser();
+    	fc.showOpenDialog(new JFrame());
+
+//    	try {
+//    	    // Open an input stream
+//    	    Scanner reader = new Scanner(fc.getSelectedFile());
+//    	}
+    	
+    	File res = fc.getSelectedFile();	// save selected file
+    	JSONArray collectionList = new JSONArray();	// initialize 
+    	
+    	
+    	JSONParser jsonParser = new JSONParser();	
+        
+        try (FileReader reader = new FileReader(res.getAbsolutePath()))	// get file by absolute path
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader); 	// if this is not a json file the software will crash probably
+ 
+            collectionList = (JSONArray) obj;
+         
+             
+            //Iterate over employee array
+            //employeeList.forEach( emp -> parseCollectionObject( (JSONObject) emp ) );
+ 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    	
+    	
+    	this.uploadedCollection = collectionList; // save json array to class, just in case we need it 
+    	
+    	int max = 100;
+	    int min = 1;
+	    
+	    CollectionTable.getItems().clear();	// clear the table before inserting new data from file
+
+        for (int i = 0; i < this.uploadedCollection.size(); i++) { // loop on collection list to get items for display
+        	JSONObject currentCollection = ((JSONObject)this.uploadedCollection.get(i));
+            String collName = (String)currentCollection.get("Name");
+            Long opensea = (Long)currentCollection.get("Opensea");
+            Long magiceden = (Long)currentCollection.get("Magiceden");
+            Double diff = (Double)currentCollection.get("Diff");
+            
+            CollectionTable.getItems().add(new Collection(collName, opensea, magiceden, diff.floatValue()));
+            //System.out.println(collName);
+        }
     	
         
     }

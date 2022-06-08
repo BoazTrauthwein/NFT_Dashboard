@@ -1,5 +1,7 @@
 package application.classes;
 
+import org.json.simple.JSONObject;
+
 public class Collection {
 
 	private String name;
@@ -39,7 +41,24 @@ public class Collection {
 	public void setDiff(float diff) {
 		this.diff = diff;
 	}
+
+	// Uses JSON toString property to get formatted string to put into JSON file
+	@Override
+	public String toString() {
+		return this.getJSONObject().toJSONString(); // Note that this re-arranges order of properties
+	}
 	
+	// Builds a JSON object out of the Collection (this class)
+	public JSONObject getJSONObject()
+	{
+		JSONObject result = new JSONObject();
+		result.put("Name", this.getName());
+		result.put("Opensea", this.getOpenseaSol());
+		result.put("Magiceden", this.getMagicEdenSol());
+		result.put("Diff", this.getDiff());
+		
+		return result; // Note that this re-arranges order of properties
+	}
 	
 	
 	
