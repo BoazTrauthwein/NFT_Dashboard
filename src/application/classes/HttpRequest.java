@@ -20,7 +20,6 @@ public class HttpRequest {
         String line;
         StringBuilder responseContent = new StringBuilder();
         try{
-        	 //URL url = new URL("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
         	 URL url = new URL(urlRequest);
             conn = (HttpURLConnection) url.openConnection();
 

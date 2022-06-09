@@ -48,7 +48,7 @@ public class Collection {
 	@Override
 	public String toString() {
 		return this.getJSONObject().toJSONString(); // Note that this re-arranges order of properties
-	}
+}
 	
 	// Builds a JSON object out of the Collection (this class)
 	public JSONObject getJSONObject()
