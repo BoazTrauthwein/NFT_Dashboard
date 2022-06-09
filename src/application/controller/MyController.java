@@ -54,8 +54,7 @@ import application.classes.HttpRequest;
 public class MyController implements Initializable {
 
 	HttpRequest request;
-	private boolean isUpload;
-	private JSONArray uploadedCollection;
+	private JSONArray uploadedCollection; // just in case we need this file for future use
 	
 
     @FXML
@@ -163,7 +162,7 @@ public class MyController implements Initializable {
     	 }
     }
     
-    // Upload to table from an existing JSON file from system explorer
+    // Upload to table from an existing JSON file from system explorer, fills the tableview with file data
     public void uploadListFunc(ActionEvent event) throws Exception {
     	//FileChooserSample ChooseJSON = new FileChooserSample();
     	//ChooseJSON.launch(null);
@@ -253,7 +252,7 @@ public class MyController implements Initializable {
 	    return jsonObj;
     }
 	
-	
+	// Fill the table view with collections from server
 	private void fillTableItems()
 	{
 		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=50");

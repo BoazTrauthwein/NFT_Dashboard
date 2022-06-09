@@ -2,6 +2,8 @@ package application.classes;
 
 import org.json.simple.JSONObject;
 
+// Class for saving an NFT collection data
+
 public class Collection {
 
 	private String name;
