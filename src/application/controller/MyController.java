@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -36,6 +37,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -281,6 +284,9 @@ public class MyController implements Initializable {
     	//ChooseJSON.launch(null);
     	
     	final JFileChooser fc = new JFileChooser();
+    	
+    	fc.setFileFilter(new JSONFilter());
+    	
     	fc.showOpenDialog(new JFrame());
 
 //    	try {
