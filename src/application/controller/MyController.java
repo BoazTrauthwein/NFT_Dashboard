@@ -21,7 +21,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+import java.net.URI;
 import java.net.URL;
+import java.net.http.*;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -35,14 +37,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import application.classes.Collection;
-import application.classes.HttpRequest;
+import application.classes.NftHttpRequest;
 
 
 
 public class MyController implements Initializable {
 	
 
-	HttpRequest request;
+	NftHttpRequest request;
 	
 	int emailThreshold = 10; // default
 
@@ -176,8 +178,11 @@ public class MyController implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+    	request = new NftHttpRequest();
+    	
     	initializeCollectionTable();
     	initializeCmxList();
+//    	printTestText();
     	
     }
     
@@ -286,17 +291,24 @@ public class MyController implements Initializable {
     
     private JSONArray getJSONArray(String urlRequest)
     {
-    	request = new HttpRequest();
 		String req = request.getRequest(urlRequest);
 		
-		Object obj = JSONValue.parse(req);
-	    JSONArray arr = (JSONArray)obj;
-	    return arr;
+		if(urlRequest.contains(".magiceden.")) {
+			Object obj = JSONValue.parse(req);
+		    JSONArray arr = (JSONArray)obj;
+		    return arr;
+		}
+		else
+		{
+			Object obj = JSONValue.parse(req);
+		    JSONArray arr = (JSONArray)(((JSONObject)obj).get("collections"));
+		    return arr;
+		}
     }
     
     private JSONObject getJSONObject(String urlRequest)
     {
-    	request = new HttpRequest();
+    	
 		String req = request.getRequest(urlRequest);
 		
 		Object obj = JSONValue.parse(req);
@@ -307,43 +319,88 @@ public class MyController implements Initializable {
 	
 	private void fillTableItems()
 	{
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
-	    
-	    int max = 100;
-	    int min = 1;
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=20");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             String collName = (String)((JSONObject)arrCollection.get(i)).get("name");
             String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
             
-            String tmp = "https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol;
-            //System.out.println(tmp);
-            JSONObject objSymbolMagiceden = getJSONObject(tmp);
-            long floorPriceMagiceden = 0;
-            try {
-            	floorPriceMagiceden = (long)objSymbolMagiceden.get("floorPrice"); 
-			} catch (Exception e) {
-				floorPriceMagiceden = -1;
-			}
+            long floorPriceMagiceden = getMagicedenFloorPrice("https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol);
             
-            String urlOpensea = "https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats";
-            System.out.println(urlOpensea);
-            JSONObject objSymbolOpensea = getJSONObject(urlOpensea);
-            long floorPriceOpensea = 0;
-            try {
-            	JSONObject statsOpensea = (JSONObject)objSymbolOpensea.get("stats");
-            	floorPriceOpensea = (long)statsOpensea.get("floor_Price"); 
-			} catch (Exception e) {
-				floorPriceOpensea = -1;
-			}
-            System.out.println("Opensea floor price: " + floorPriceOpensea);
-            
-            //int num2 = (int)(Math.random()*(max-min+1)+min);  
+    		long floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
             CollectionTable.getItems().add(new Collection(collName, floorPriceOpensea, floorPriceMagiceden,  0));
-            //System.out.println(collName);
+            
+            System.out.println("-----------------------------------------------------------------------------------");
+//            sleep(500);
         }
 	}
 	
+	private long getMagicedenFloorPrice(String urlPath)
+	{
+        System.out.println(urlPath);
+        JSONObject objSymbolMagiceden = getJSONObject(urlPath);
+        long floorPrice = 0;
+        try {
+        	floorPrice = (long)objSymbolMagiceden.get("floorPrice"); 
+		} catch (Exception e) {
+			floorPrice = -1;
+		}
+        return floorPrice;
+	}
+	
+	private long getOpenseaFloorPrice(String urlPath, String collSymbol)
+	{
+        System.out.println(urlPath);
+        long floorPrice = 0;
+        try {
+        	JSONObject joValue = getJSONObject("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats");
+    		JSONObject joStats = (JSONObject)joValue.get("stats");
+    		double dPrice = (double)joStats.get("floor_price");
+    		floorPrice = (long)(dPrice * 100000);
+		} catch (Exception e) {
+			floorPrice = -1;
+		}
+        return floorPrice;
+	}
+	
+	private void sleep(int miliseconds)
+	{
+		try {
+		    Thread.sleep(miliseconds);
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
+		}
+	}
+	
+	
+	private void printTestText()
+	{
+//		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
+//
+//        for (int i = 0; i < arrCollection.size(); i++) {
+//        	String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
+//        	System.out.println(collSymbol);
+//        }
+		
+		JSONObject joValue = getJSONObject("https://api-mainnet.magiceden.dev/v2/collections/drc");
+		long lPrice = (long)joValue.get("floorPrice");
+        System.out.println(lPrice);
+        System.out.println("-----------------------------------------------------------------------------------");
+        
+        
+        
+		joValue = getJSONObject("https://api.opensea.io/api/v1/collection/drc/stats");
+		JSONObject joStats = (JSONObject)joValue.get("stats");
+		double fPrice = (double)joStats.get("floor_price");
+		System.out.println(fPrice);
+		
+//		arrCollection = getJSONArray("https://api.opensea.io/api/v1/collections?offset=0&limit=10");
+//
+//        for (int i = 0; i < arrCollection.size(); i++) {
+//        	String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
+//        	System.out.println(collSymbol);
+//        }
+	}
 
 
 
