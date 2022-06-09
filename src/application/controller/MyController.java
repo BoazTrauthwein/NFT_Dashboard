@@ -42,6 +42,8 @@ import java.util.TimerTask;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -267,7 +269,23 @@ public class MyController implements Initializable {
 
 	}
     // Save a JSON file out of table of collections
-    public void saveListFunc(ActionEvent event)  {    	
+    public void saveListFunc(ActionEvent event)  {  
+    	
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	 JFileChooser chooser = new JFileChooser();
     	 chooser.setCurrentDirectory(new File("/home/me/Documents"));	// the default folder that will show when opened 
     	 int retrival = chooser.showSaveDialog(null);	// only save if approved saving by user
@@ -283,16 +301,27 @@ public class MyController implements Initializable {
     	//FileChooserSample ChooseJSON = new FileChooserSample();
     	//ChooseJSON.launch(null);
     	
+    	 try {
+ 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+ 		} catch (ClassNotFoundException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (InstantiationException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (IllegalAccessException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (UnsupportedLookAndFeelException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+    	
     	final JFileChooser fc = new JFileChooser();
     	
     	fc.setFileFilter(new JSONFilter());
     	
     	fc.showOpenDialog(new JFrame());
-
-//    	try {
-//    	    // Open an input stream
-//    	    Scanner reader = new Scanner(fc.getSelectedFile());
-//    	}
     	
     	File res = fc.getSelectedFile();	// save selected file
     	JSONArray collectionList = new JSONArray();	// initialize 
@@ -306,10 +335,6 @@ public class MyController implements Initializable {
             Object obj = jsonParser.parse(reader); 	// if this is not a json file the software will crash probably
  
             collectionList = (JSONArray) obj;
-         
-             
-            //Iterate over employee array
-            //employeeList.forEach( emp -> parseCollectionObject( (JSONObject) emp ) );
  
         } catch (FileNotFoundException e) {
             e.printStackTrace();
