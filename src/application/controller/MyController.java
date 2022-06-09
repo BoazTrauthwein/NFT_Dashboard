@@ -159,6 +159,8 @@ public class MyController implements Initializable {
             	String emails= EmailsInput.getText();
 
             	if(isSelected ){
+            		String RecipientList[] = {EmailsInput.getText()};
+           		 	JavaEmail.sendMailNow(CollectionTable.getItems().toString(), RecipientList);
             	   
             	} else {
             	   

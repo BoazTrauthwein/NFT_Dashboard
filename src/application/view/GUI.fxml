@@ -14,8 +14,8 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.MyController">
-   <center>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0" style="-fx-background-color: #636363;">
+   <bottom>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0" style="-fx-background-color: #636363;" BorderPane.alignment="CENTER">
          <children>
             <VBox layoutX="143.0" layoutY="252.0" prefHeight="224.0" prefWidth="602.0" style="-fx-background-color: #34eb7d;">
                <children>
@@ -44,20 +44,20 @@
                </font>
             </Text>
             <CheckBox fx:id="SaveEmailTimeBtn" layoutX="657.0" layoutY="584.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
-            <CheckBox fx:id="SaveEmailThersholdBtn" layoutX="657.0" layoutY="620.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
-            <CheckBox fx:id="SaveEmailAdressesBtn" layoutX="657.0" layoutY="650.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveEmailThersholdBtn" layoutX="657.0" layoutY="614.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveEmailAdressesBtn" layoutX="657.0" layoutY="644.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
             <CheckBox fx:id="SaveRefreshBtn" layoutX="657.0" layoutY="554.0" mnemonicParsing="false" onAction="#checkRefresh" text="Save" textFill="#8aebb1" />
             <Text fill="#8aebb1" layoutX="342.0" layoutY="536.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Text fill="#8aebb1" layoutX="110.0" layoutY="569.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Refresh collection floor price every" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="107.0" layoutY="571.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Refresh collection floor price every" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text fill="#8aebb1" layoutX="107.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check if need to send email every" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="105.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check if need to send email every" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
@@ -79,8 +79,8 @@
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField fx:id="SendEmailEveryXtimeInput" layoutX="407.0" layoutY="585.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
-            <Text fill="#8aebb1" layoutX="447.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
+            <TextField fx:id="SendEmailEveryXtimeInput" layoutX="408.0" layoutY="585.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="447.0" layoutY="605.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
                <font>
                   <Font size="18.0" />
                </font>
@@ -125,5 +125,5 @@
             <Pagination layoutX="550.0" layoutY="457.0" pageCount="10" prefHeight="66.0" prefWidth="199.0" />
          </children>
       </AnchorPane>
-   </center>
+   </bottom>
 </BorderPane>
