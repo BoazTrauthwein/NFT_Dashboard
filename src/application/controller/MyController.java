@@ -1,9 +1,8 @@
 package application.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.event.ChangeListener;
 
@@ -24,7 +23,30 @@ import javafx.scene.control.TextField;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -35,6 +57,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import application.classes.Collection;
 import application.classes.NftHttpRequest;
@@ -43,8 +67,8 @@ import application.classes.NftHttpRequest;
 
 public class MyController implements Initializable {
 	
-
 	NftHttpRequest request;
+	private JSONArray uploadedCollection; // just in case we need this file for future use
 	
 	int emailThreshold = 10; // default
 
@@ -137,6 +161,8 @@ public class MyController implements Initializable {
             	String emails= EmailsInput.getText();
 
             	if(isSelected ){
+            		String RecipientList[] = {EmailsInput.getText()};
+           		 	JavaEmail.sendMailNow(CollectionTable.getItems().toString(), RecipientList);
             	   
             	} else {
             	   
@@ -249,13 +275,100 @@ public class MyController implements Initializable {
     
 
 	}
-    
-    public void saveListFunc(ActionEvent event)  {
+    // Save a JSON file out of table of collections
+    public void saveListFunc(ActionEvent event)  {  
     	
-    
+        try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	 JFileChooser chooser = new JFileChooser();
+    	 chooser.setCurrentDirectory(new File("/home/me/Documents"));	// the default folder that will show when opened 
+    	 int retrival = chooser.showSaveDialog(null);	// only save if approved saving by user
+    	 if (retrival == JFileChooser.APPROVE_OPTION) {
+    		 try(FileWriter fw = new FileWriter(chooser.getSelectedFile()+".json")) { //add .json to define json file type
+    			    fw.write(CollectionTable.getItems().toString());	// save table data in the file
+    			} catch (IOException ex) {}
+    	 }
     }
     
+    // Upload to table from an existing JSON file from system explorer, fills the tableview with file data
     public void uploadListFunc(ActionEvent event) throws Exception {
+    	//FileChooserSample ChooseJSON = new FileChooserSample();
+    	//ChooseJSON.launch(null);
+    	
+    	 try {
+ 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+ 		} catch (ClassNotFoundException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (InstantiationException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (IllegalAccessException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (UnsupportedLookAndFeelException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+    	
+    	final JFileChooser fc = new JFileChooser();
+    	
+    	fc.setFileFilter(new JSONFilter());
+    	
+    	fc.showOpenDialog(new JFrame());
+    	
+    	File res = fc.getSelectedFile();	// save selected file
+    	JSONArray collectionList = new JSONArray();	// initialize 
+    	
+    	
+    	JSONParser jsonParser = new JSONParser();	
+        
+        try (FileReader reader = new FileReader(res.getAbsolutePath()))	// get file by absolute path
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader); 	// if this is not a json file the software will crash probably
+ 
+            collectionList = (JSONArray) obj;
+ 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    	
+    	
+    	this.uploadedCollection = collectionList; // save json array to class, just in case we need it 
+    	
+    	int max = 100;
+	    int min = 1;
+	    
+	    CollectionTable.getItems().clear();	// clear the table before inserting new data from file
+
+        for (int i = 0; i < this.uploadedCollection.size(); i++) { // loop on collection list to get items for display
+        	JSONObject currentCollection = ((JSONObject)this.uploadedCollection.get(i));
+            String collName = (String)currentCollection.get("Name");
+            Long opensea = (Long)currentCollection.get("Opensea");
+            Long magiceden = (Long)currentCollection.get("Magiceden");
+            Double diff = (Double)currentCollection.get("Diff");
+            
+            CollectionTable.getItems().add(new Collection(collName, opensea, magiceden, diff.floatValue()));
+            //System.out.println(collName);
+        }
     	
         
     }
@@ -316,10 +429,10 @@ public class MyController implements Initializable {
 	    return jsonObj;
     }
 	
-	
+	// Fill the table view with collections from server
 	private void fillTableItems()
 	{
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=20");
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             String collName = (String)((JSONObject)arrCollection.get(i)).get("name");
@@ -331,7 +444,7 @@ public class MyController implements Initializable {
             CollectionTable.getItems().add(new Collection(collName, floorPriceOpensea, floorPriceMagiceden,  0));
             
             System.out.println("-----------------------------------------------------------------------------------");
-//            sleep(500);
+            sleep(500);
         }
 	}
 	
@@ -356,7 +469,7 @@ public class MyController implements Initializable {
         	JSONObject joValue = getJSONObject("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats");
     		JSONObject joStats = (JSONObject)joValue.get("stats");
     		double dPrice = (double)joStats.get("floor_price");
-    		floorPrice = (long)(dPrice * 100000);
+    		floorPrice = (long)(dPrice * 1000000000);
 		} catch (Exception e) {
 			floorPrice = -1;
 		}
