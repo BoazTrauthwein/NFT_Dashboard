@@ -24,6 +24,8 @@ import application.classes.Collection;
 
 public class DashboardController {
 	private static HttpURLConnection conn;
+	private boolean isUpload;
+	private Collection uploadedCollection;
 	
 	
 	@FXML
@@ -47,7 +49,11 @@ public class DashboardController {
 	
 	private void fillTableItems()
 	{
-		String req = getRequest();
+		String req;
+		if (this.isUpload == false)
+			req = getRequest();
+		else
+			req = uploadedCollection.toString();
 		
 		Object obj = JSONValue.parse(req);
 	    JSONArray arr = (JSONArray)obj;
@@ -57,8 +63,8 @@ public class DashboardController {
 	    
         for (int i = 0; i < 7; i++) {
             String collName = (String)((JSONObject)arr.get(i)).get("symbol");
-            int num1 = (int)(Math.random()*(max-min+1)+min);  
-            int num2 = (int)(Math.random()*(max-min+1)+min);  
+            int num1 = (int)(Math.random()*(max-min+1)+min); 
+            int num2 = (int)(Math.random()*(max-min+1)+min); 
             tblView.getItems().add(new Collection(collName, num1, num2, num1-num2));
             //System.out.println(collName);
         }
@@ -100,8 +106,6 @@ public class DashboardController {
             conn.setRequestMethod("GET");
             //conn.setConnectTimeout(5000);// 5000 milliseconds = 5 seconds
             //conn.setReadTimeout(5000);
-            
-
 
             // Test if the response from the server is successful
             int status = conn.getResponseCode();

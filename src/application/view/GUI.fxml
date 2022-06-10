@@ -14,107 +14,116 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.MyController">
-   <center>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0">
+   <bottom>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0" style="-fx-background-color: #636363;" BorderPane.alignment="CENTER">
          <children>
-            <VBox layoutX="143.0" layoutY="252.0" prefHeight="224.0" prefWidth="602.0">
+            <VBox layoutX="143.0" layoutY="252.0" prefHeight="224.0" prefWidth="602.0" style="-fx-background-color: #34eb7d;">
                <children>
-                  <TableView fx:id="CollectionTable" prefHeight="266.0" prefWidth="602.0">
+                  <TableView fx:id="CollectionTable" prefHeight="266.0" prefWidth="602.0" style="-fx-background-color: #d4fae3;">
                     <columns>
-                      <TableColumn fx:id="CollectionNames" prefWidth="167.0" text="Collection name " />
-                      <TableColumn fx:id="Opensea" prefWidth="113.0" text="Opensea [Sol]" />
-                        <TableColumn fx:id="MagicEden" prefWidth="153.0" text="Magic eden [Sol]" />
-                        <TableColumn fx:id="Diff" prefWidth="168.0" text="Diff [%]" />
+                      <TableColumn fx:id="CollectionNames" prefWidth="167.0" style="-fx-background-color: #8aebb1;" text="Collection name " />
+                      <TableColumn fx:id="Opensea" prefWidth="113.0" style="-fx-background-color: #80d9a4;" text="Opensea [Sol]" />
+                        <TableColumn fx:id="MagicEden" prefWidth="153.0" style="-fx-background-color: #8aebb1;" text="Magic eden [Sol]" />
+                        <TableColumn fx:id="Diff" prefWidth="168.0" style="-fx-background-color: #80d9a4;" text="Diff [%]" />
                     </columns>
                   </TableView>
                </children>
             </VBox>
-            <Button fx:id="AddCollectionBtn" layoutX="577.0" layoutY="178.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="25.0" prefWidth="118.0" text="+ Add collection" />
-            <Text layoutX="277.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Button fx:id="AddCollectionBtn" layoutX="577.0" layoutY="178.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="25.0" prefWidth="118.0" style="-fx-background-color: #8aebb1;" text="+ Add collection" textFill="#477a5c">
                <font>
-                  <Font size="24.0" />
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Text fill="#8aebb1" layoutX="277.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Text layoutX="233.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Top 100 NFT Collections" textAlignment="CENTER" wrappingWidth="468.13671875">
+            <Text fill="#8aebb1" layoutX="233.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Top 100 NFT Collections" textAlignment="CENTER" wrappingWidth="468.13671875">
                <font>
-                  <Font size="36.0" />
+                  <Font name="System Bold" size="36.0" />
                </font>
             </Text>
-            <CheckBox fx:id="SaveEmailTimeBtn" layoutX="657.0" layoutY="584.0" mnemonicParsing="false" text="Save" />
-            <CheckBox fx:id="SaveEmailThersholdBtn" layoutX="657.0" layoutY="620.0" mnemonicParsing="false" text="Save" />
-            <CheckBox fx:id="SaveEmailAdressesBtn" layoutX="657.0" layoutY="650.0" mnemonicParsing="false" text="Save" />
-            <CheckBox fx:id="SaveRefreshBtn" layoutX="657.0" layoutY="554.0" mnemonicParsing="false" onAction="#checkRefresh" text="Save" />
-            <Text layoutX="342.0" layoutY="536.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <CheckBox fx:id="SaveEmailTimeBtn" layoutX="657.0" layoutY="584.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveEmailThersholdBtn" layoutX="657.0" layoutY="614.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveEmailAdressesBtn" layoutX="657.0" layoutY="644.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveRefreshBtn" layoutX="657.0" layoutY="554.0" mnemonicParsing="false" onAction="#checkRefresh" text="Save" textFill="#8aebb1" />
+            <Text fill="#8aebb1" layoutX="342.0" layoutY="536.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
-                  <Font size="24.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <Text layoutX="110.0" layoutY="569.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Refresh collection floor price every" textAlignment="CENTER" wrappingWidth="301.13671875">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-            <Text layoutX="107.0" layoutY="599.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check if need to send email every" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="107.0" layoutY="571.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Refresh collection floor price every" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text layoutX="35.0" layoutY="633.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email threshold" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="105.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check if need to send email every" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text layoutX="30.0" layoutY="665.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Send emails to" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="35.0" layoutY="633.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email threshold" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField fx:id="EmailsInput" layoutX="259.0" layoutY="646.0" prefHeight="25.0" prefWidth="386.0" />
-            <TextField fx:id="RefreshSecInput" layoutX="408.0" layoutY="553.0" prefHeight="25.0" prefWidth="34.0" />
-            <Text layoutX="447.0" layoutY="572.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
+            <Text fill="#8aebb1" layoutX="30.0" layoutY="665.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Send emails to" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField fx:id="SendEmailEveryXtimeInput" layoutX="407.0" layoutY="585.0" prefHeight="25.0" prefWidth="34.0" />
-            <Text layoutX="447.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
+            <TextField fx:id="EmailsInput" layoutX="259.0" layoutY="646.0" prefHeight="25.0" prefWidth="386.0" style="-fx-background-color: #8aebb1;" />
+            <TextField fx:id="RefreshSecInput" layoutX="408.0" layoutY="553.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="447.0" layoutY="572.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField fx:id="EmailthresholdInput" layoutX="256.0" layoutY="614.0" prefHeight="25.0" prefWidth="34.0" />
-            <Text layoutX="292.0" layoutY="633.0" strokeType="OUTSIDE" strokeWidth="0.0" text="percent" textAlignment="CENTER" wrappingWidth="86.99999999999989">
+            <TextField fx:id="SendEmailEveryXtimeInput" layoutX="408.0" layoutY="585.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="447.0" layoutY="605.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text layoutX="22.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Show" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <TextField fx:id="EmailthresholdInput" layoutX="256.0" layoutY="614.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="292.0" layoutY="633.0" strokeType="OUTSIDE" strokeWidth="0.0" text="percent" textAlignment="CENTER" wrappingWidth="86.99999999999989">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text layoutX="383.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search:" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="22.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Show" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <ComboBox fx:id="ShowXentriesCMB" layoutX="202.0" layoutY="137.0" onAction="#setShowXentriesCMB" onMouseDragOver="#setShowXentriesCMB" prefHeight="25.0" prefWidth="56.0" />
-            <Text layoutX="265.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="entries" textAlignment="CENTER" wrappingWidth="70.13671875">
+            <Text fill="#8aebb1" layoutX="383.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search:" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField fx:id="SearchTextInput" layoutX="565.0" layoutY="141.0" onAction="#searchCollectionFunc" prefHeight="25.0" prefWidth="176.0" />
-            <Button fx:id="SaveListBtn" layoutX="791.0" layoutY="334.0" mnemonicParsing="false" onAction="#saveListFunc" prefHeight="42.0" prefWidth="73.0" text="Save List" textAlignment="RIGHT" />
-            <Button fx:id="UploadListBtn" layoutX="793.0" layoutY="396.0" mnemonicParsing="false" onAction="#uploadListFunc" text="Upload list" />
-            <TextField layoutX="410.0" layoutY="178.0" />
-            <Text layoutX="186.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <ComboBox fx:id="ShowXentriesCMB" layoutX="202.0" layoutY="137.0" onAction="#setShowXentriesCMB" onMouseDragOver="#setShowXentriesCMB" prefHeight="25.0" prefWidth="56.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="265.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="entries" textAlignment="CENTER" wrappingWidth="70.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Pagination layoutX="550.0" layoutY="457.0" prefHeight="66.0" prefWidth="199.0" />
+            <TextField fx:id="SearchTextInput" layoutX="565.0" layoutY="141.0" onAction="#searchCollectionFunc" prefHeight="25.0" prefWidth="176.0" style="-fx-background-color: #8aebb1;" />
+            <Button fx:id="SaveListBtn" layoutX="791.0" layoutY="334.0" mnemonicParsing="false" onAction="#saveListFunc" prefHeight="42.0" prefWidth="73.0" style="-fx-background-color: #8aebb1;" text="Save List" textAlignment="RIGHT" textFill="#477a5c">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="UploadListBtn" layoutX="793.0" layoutY="396.0" mnemonicParsing="false" onAction="#uploadListFunc" style="-fx-background-color: #8aebb1;" text="Upload list" textFill="#477a5c">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <TextField layoutX="410.0" layoutY="178.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="186.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Pagination layoutX="550.0" layoutY="457.0" pageCount="10" prefHeight="66.0" prefWidth="199.0" />
          </children>
       </AnchorPane>
-   </center>
+   </bottom>
 </BorderPane>
