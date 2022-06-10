@@ -319,7 +319,7 @@ public class MyController implements Initializable {
 	
 	private void fillTableItems()
 	{
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=20");
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             String collName = (String)((JSONObject)arrCollection.get(i)).get("name");
@@ -331,7 +331,7 @@ public class MyController implements Initializable {
             CollectionTable.getItems().add(new Collection(collName, floorPriceOpensea, floorPriceMagiceden,  0));
             
             System.out.println("-----------------------------------------------------------------------------------");
-//            sleep(500);
+            sleep(500);
         }
 	}
 	
@@ -356,7 +356,7 @@ public class MyController implements Initializable {
         	JSONObject joValue = getJSONObject("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats");
     		JSONObject joStats = (JSONObject)joValue.get("stats");
     		double dPrice = (double)joStats.get("floor_price");
-    		floorPrice = (long)(dPrice * 100000);
+    		floorPrice = (long)(dPrice * 1000000000);
 		} catch (Exception e) {
 			floorPrice = -1;
 		}
