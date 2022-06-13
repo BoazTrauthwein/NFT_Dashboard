@@ -18,21 +18,21 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
 
-import application.classes.Collection;
+import application.classes.NFTCollection;
 
 
 
 public class DashboardController {
 	private static HttpURLConnection conn;
 	private boolean isUpload;
-	private Collection uploadedCollection;
+	private NFTCollection uploadedCollection;
 	
 	
 	@FXML
 	private Label lbl;
 
     @FXML
-    private TableView<Collection> tblView;
+    private TableView<NFTCollection> tblView;
 
 	// Event Listener on Button.onAction
 	@FXML
@@ -65,24 +65,24 @@ public class DashboardController {
             String collName = (String)((JSONObject)arr.get(i)).get("symbol");
             int num1 = (int)(Math.random()*(max-min+1)+min); 
             int num2 = (int)(Math.random()*(max-min+1)+min); 
-            tblView.getItems().add(new Collection(collName, num1, num2, num1-num2));
+            tblView.getItems().add(new NFTCollection(collName, num1, num2, num1-num2));
             //System.out.println(collName);
         }
 	}
 	
 	private void createTableView()
 	{
-		TableColumn nameColumn = new TableColumn<Collection, String>("Collection Name");
-		nameColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("name"));
+		TableColumn nameColumn = new TableColumn<NFTCollection, String>("Collection Name");
+		nameColumn.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("name"));
 		
-		TableColumn openseaSolColumn = new TableColumn<Collection, String>("Open Sea [SOL]");
-		openseaSolColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("openseaSol"));
+		TableColumn openseaSolColumn = new TableColumn<NFTCollection, String>("Open Sea [SOL]");
+		openseaSolColumn.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("openseaSol"));
 		
-		TableColumn magicEdenSolColumn = new TableColumn<Collection, String>("Magic Eden [SOL]");
-		magicEdenSolColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("magicEdenSol"));
+		TableColumn magicEdenSolColumn = new TableColumn<NFTCollection, String>("Magic Eden [SOL]");
+		magicEdenSolColumn.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("magicEdenSol"));
 		
-		TableColumn diffColumn = new TableColumn<Collection, String>("Diff [%]");
-		diffColumn.setCellValueFactory(new PropertyValueFactory<Collection, String>("diff"));
+		TableColumn diffColumn = new TableColumn<NFTCollection, String>("Diff [%]");
+		diffColumn.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("diff"));
 		
 		tblView.getColumns().add(nameColumn);
 		tblView.getColumns().add(openseaSolColumn);
