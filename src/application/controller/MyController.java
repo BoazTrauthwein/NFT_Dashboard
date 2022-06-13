@@ -60,14 +60,15 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import application.classes.Collection;
+import application.classes.NFTCollection;
 import application.classes.NftHttpRequest;
+import application.classes.TableDataBuilder;
 
 
 
 public class MyController implements Initializable {
 	
-	NftHttpRequest request;
+	
 	private JSONArray uploadedCollection; // just in case we need this file for future use
 	
 	int emailThreshold = 10; // default
@@ -76,24 +77,24 @@ public class MyController implements Initializable {
 	public  boolean flagEmails = false;
 	
 	 @FXML private Pagination pagination;
-	    private ObservableList<Collection> masterData = FXCollections.observableArrayList();
+	    private ObservableList<NFTCollection> masterData = FXCollections.observableArrayList();
 	    private int dataSize;
 	    private int rowsPerPage = 5;
 
     @FXML
-    private TableView<Collection> CollectionTable;
+    private TableView<NFTCollection> CollectionTable;
 
     @FXML
-    private TableColumn<Collection, String> CollectionNames;
+    private TableColumn<NFTCollection, String> CollectionNames;
 
     @FXML
-    private TableColumn<Collection, String> Opensea;
+    private TableColumn<NFTCollection, String> Opensea;
 
     @FXML
-    private TableColumn<Collection, String> MagicEden;
+    private TableColumn<NFTCollection, String> MagicEden;
 
     @FXML
-    private TableColumn<Collection, String> Diff;
+    private TableColumn<NFTCollection, String> Diff;
 
     @FXML
     private Button AddCollectionBtn;
@@ -179,10 +180,10 @@ public class MyController implements Initializable {
     
     public void initializeCollectionTable()
     {
-        CollectionNames.setCellValueFactory(new PropertyValueFactory<Collection, String>("name"));
-        Opensea.setCellValueFactory(new PropertyValueFactory<Collection, String>("openseaSol"));
-        MagicEden.setCellValueFactory(new PropertyValueFactory<Collection, String>("magicEdenSol"));
-        Diff.setCellValueFactory(new PropertyValueFactory<Collection, String>("diff"));
+        CollectionNames.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("name"));
+        Opensea.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("openseaSol"));
+        MagicEden.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("magicEdenSol"));
+        Diff.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("diff"));
         CollectionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
 		fillTableItems();
@@ -204,7 +205,7 @@ public class MyController implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	request = new NftHttpRequest();
+    	
     	
     	initializeCollectionTable();
     	initializeCmxList();
@@ -366,7 +367,7 @@ public class MyController implements Initializable {
             Long magiceden = (Long)currentCollection.get("Magiceden");
             Double diff = (Double)currentCollection.get("Diff");
             
-            CollectionTable.getItems().add(new Collection(collName, opensea, magiceden, diff.floatValue()));
+            CollectionTable.getItems().add(new NFTCollection(collName, opensea, magiceden, diff.floatValue()));
             //System.out.println(collName);
         }
     	
@@ -374,14 +375,14 @@ public class MyController implements Initializable {
     }
     
     public void searchCollectionFunc(ActionEvent event) throws Exception {
-    	
+    	String str = "HAAALLLOOO";
     	ObservableList data =  CollectionTable.getItems();
     	SearchTextInput.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
     	            if (oldValue != null && (newValue.length() < oldValue.length())) {
     	            	CollectionTable.setItems(data);
     	            }
     	            String value = newValue.toLowerCase();
-    	            ObservableList<Collection> subentries = FXCollections.observableArrayList();
+    	            ObservableList<NFTCollection> subentries = FXCollections.observableArrayList();
 
     	            long count = CollectionTable.getColumns().stream().count();
     	            for (int i = 0; i < CollectionTable.getItems().size(); i++) {
@@ -402,119 +403,15 @@ public class MyController implements Initializable {
 		
 	}
     
-    private JSONArray getJSONArray(String urlRequest)
-    {
-		String req = request.getRequest(urlRequest);
-		
-		if(urlRequest.contains(".magiceden.")) {
-			Object obj = JSONValue.parse(req);
-		    JSONArray arr = (JSONArray)obj;
-		    return arr;
-		}
-		else
-		{
-			Object obj = JSONValue.parse(req);
-		    JSONArray arr = (JSONArray)(((JSONObject)obj).get("collections"));
-		    return arr;
-		}
-    }
-    
-    private JSONObject getJSONObject(String urlRequest)
-    {
-    	
-		String req = request.getRequest(urlRequest);
-		
-		Object obj = JSONValue.parse(req);
-		JSONObject jsonObj = (JSONObject)obj;
-	    return jsonObj;
-    }
 	
 	// Fill the table view with collections from server
 	private void fillTableItems()
 	{
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
-
-        for (int i = 0; i < arrCollection.size(); i++) {
-            String collName = (String)((JSONObject)arrCollection.get(i)).get("name");
-            String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
-            
-            long floorPriceMagiceden = getMagicedenFloorPrice("https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol);
-            
-    		long floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
-            CollectionTable.getItems().add(new Collection(collName, floorPriceOpensea, floorPriceMagiceden,  0));
-            
-            System.out.println("-----------------------------------------------------------------------------------");
-            sleep(500);
-        }
+		TableDataBuilder dataBuilder = new TableDataBuilder();
+		dataBuilder.buildData();
+		ArrayList<NFTCollection> alNftData = dataBuilder.getNftCollection();
+		for (var nftData : alNftData)
+			CollectionTable.getItems().add(new NFTCollection(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  0));
 	}
-	
-	private long getMagicedenFloorPrice(String urlPath)
-	{
-        System.out.println(urlPath);
-        JSONObject objSymbolMagiceden = getJSONObject(urlPath);
-        long floorPrice = 0;
-        try {
-        	floorPrice = (long)objSymbolMagiceden.get("floorPrice"); 
-		} catch (Exception e) {
-			floorPrice = -1;
-		}
-        return floorPrice;
-	}
-	
-	private long getOpenseaFloorPrice(String urlPath, String collSymbol)
-	{
-        System.out.println(urlPath);
-        long floorPrice = 0;
-        try {
-        	JSONObject joValue = getJSONObject("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats");
-    		JSONObject joStats = (JSONObject)joValue.get("stats");
-    		double dPrice = (double)joStats.get("floor_price");
-    		floorPrice = (long)(dPrice * 1000000000);
-		} catch (Exception e) {
-			floorPrice = -1;
-		}
-        return floorPrice;
-	}
-	
-	private void sleep(int miliseconds)
-	{
-		try {
-		    Thread.sleep(miliseconds);
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
-		}
-	}
-	
-	
-	private void printTestText()
-	{
-//		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
-//
-//        for (int i = 0; i < arrCollection.size(); i++) {
-//        	String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
-//        	System.out.println(collSymbol);
-//        }
-		
-		JSONObject joValue = getJSONObject("https://api-mainnet.magiceden.dev/v2/collections/drc");
-		long lPrice = (long)joValue.get("floorPrice");
-        System.out.println(lPrice);
-        System.out.println("-----------------------------------------------------------------------------------");
-        
-        
-        
-		joValue = getJSONObject("https://api.opensea.io/api/v1/collection/drc/stats");
-		JSONObject joStats = (JSONObject)joValue.get("stats");
-		double fPrice = (double)joStats.get("floor_price");
-		System.out.println(fPrice);
-		
-//		arrCollection = getJSONArray("https://api.opensea.io/api/v1/collections?offset=0&limit=10");
-//
-//        for (int i = 0; i < arrCollection.size(); i++) {
-//        	String collSymbol = (String)((JSONObject)arrCollection.get(i)).get("symbol");
-//        	System.out.println(collSymbol);
-//        }
-	}
-
-
 
 }
