@@ -2,6 +2,7 @@ package application.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.event.ChangeListener;
@@ -61,6 +62,7 @@ import org.json.simple.parser.ParseException;
 
 import application.classes.NFTCollection;
 import application.classes.NftHttpRequest;
+import application.classes.NftTableData;
 import application.classes.TableDataBuilder;
 
 
@@ -76,25 +78,33 @@ public class MyController implements Initializable {
 	public  boolean flagRefresh = false;
 	public  boolean flagEmails = false;
 	
+	//TimerTask taskRefresh;
+	//Timer timerForRefresh;
+	TimerTask taskEmails  = new EmailsTask();
+	Timer timerForSendingEmails = new Timer();
+	Timer timerForRefresh = new Timer();
+	TimerTask taskRefresh = new RefreshTask();
+
+	
 	 @FXML private Pagination pagination;
 	    private ObservableList<NFTCollection> masterData = FXCollections.observableArrayList();
 	    private int dataSize;
 	    private int rowsPerPage = 5;
 
     @FXML
-    private TableView<NFTCollection> CollectionTable;
+    private TableView<NftTableData> CollectionTable;
 
     @FXML
-    private TableColumn<NFTCollection, String> CollectionNames;
+    private TableColumn<NftTableData, String> CollectionNames;
 
     @FXML
-    private TableColumn<NFTCollection, String> Opensea;
+    private TableColumn<NftTableData, String> Opensea;
 
     @FXML
-    private TableColumn<NFTCollection, String> MagicEden;
+    private TableColumn<NftTableData, String> MagicEden;
 
     @FXML
-    private TableColumn<NFTCollection, String> Diff;
+    private TableColumn<NftTableData, String> Diff;
 
     @FXML
     private Button AddCollectionBtn;
@@ -152,33 +162,16 @@ public class MyController implements Initializable {
     
     @FXML
     void searchCollectionFunc(ActionEvent event) {
-    	System.out.println("HAAALLLOOO");
-//    	ObservableList data =  CollectionTable.getItems();
-//    	SearchTextInput.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-//    	            if (oldValue != null && (newValue.length() < oldValue.length())) {
-//    	            	CollectionTable.setItems(data);
-//    	            }
-//    	            String value = newValue.toLowerCase();
-//    	            ObservableList<NFTCollection> subentries = FXCollections.observableArrayList();
-//
-//    	            long count = CollectionTable.getColumns().stream().count();
-//    	            for (int i = 0; i < CollectionTable.getItems().size(); i++) {
-//    	                for (int j = 0; j < count; j++) {
-//    	                    String entry = "" + CollectionTable.getColumns().get(j).getCellData(i);
-//    	                    if (entry.toLowerCase().contains(value)) {
-//    	                        subentries.add(CollectionTable.getItems().get(i));
-//    	                        break;
-//    	                    }
-//    	                }
-//    	            }
-//    	            CollectionTable.setItems(subentries);
-//    	        });
     	
     	CollectionTable.getItems().clear();
     	for (var nftData : alNftData) {
     		if(nftData.getName().contains(SearchTextInput.getText()))
-    			CollectionTable.getItems().add(nftData);
+    			CollectionTable.getItems().add(getNftTableDataFromNftCollection(nftData));
     	}
+    	
+    	
+		
+
     }
     
 
@@ -186,45 +179,63 @@ public class MyController implements Initializable {
    
     	
         public void run() {
-        	if(flagRefresh) {
+
         		CollectionTable.getItems().clear();
             	initializeCollectionTable();
-        	}
-
-        	
+            	try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         }
     }
     
     public class EmailsTask extends TimerTask {
     
         public void run() {
-        	if(flagEmails) {
         		boolean isSelected = SaveEmailAdressesBtn.isSelected();
             	String emails= EmailsInput.getText();
 
+
             	if(isSelected ){
-            		String RecipientList[] = {EmailsInput.getText()};
-           		 	JavaEmail.sendMailNow(CollectionTable.getItems().toString(), RecipientList);
-            	   
-            	} else {
+            		String RecipientList[] = EmailsInput.getText().split(";", -1);
+           		 	JavaEmail.sendMailNow(createMessage(), RecipientList);
+            		//JavaEmail.sendMailNow("hi",RecipientList);
             	   
             	}
-        	}
-        	
-        	
-        	
+
         }
     }
      
+
     
-    
+    public String createMessage()
+    {
+    	// boaztrauthwein@gmail.com
+    	StringBuilder msg = new StringBuilder();
+    	//String strNum = EmailthresholdInput.getText();
+    	int  threshold = emailThreshold;
+    	int nftSize = alNftData.size();
+    	int len = (threshold*nftSize)/100;
+
+    	msg.append("Collection Name" +"\t"+"OpenSea [sol]"+"\t"+"Magic Eden [sol]"+"\t"+"Diff[%]"+ "\n");
+    	msg.append("\n");
+    	for (int i = 0; i < len; i++) {
+			NftTableData ntd = getNftTableDataFromNftCollection(alNftData.get(i));
+			msg.append("\n");
+			msg.append(ntd.getName() +"\t"+ ntd.getOpenseaSol()+"\t"+ntd.getMagicEdenSol()+"\t"+ntd.getDiff()+"\n");
+    	}
+    	
+    	return msg.toString();
+    }
     
     public void initializeCollectionTable()
     {
-        CollectionNames.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("name"));
-        Opensea.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("openseaSol"));
-        MagicEden.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("magicEdenSol"));
-        Diff.setCellValueFactory(new PropertyValueFactory<NFTCollection, String>("diff"));
+        CollectionNames.setCellValueFactory(new PropertyValueFactory<NftTableData, String>("name"));
+        Opensea.setCellValueFactory(new PropertyValueFactory<NftTableData, String>("openseaSol"));
+        MagicEden.setCellValueFactory(new PropertyValueFactory<NftTableData, String>("magicEdenSol"));
+        Diff.setCellValueFactory(new PropertyValueFactory<NftTableData, String>("diff"));
         CollectionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
 		fillTableItems();
@@ -258,33 +269,41 @@ public class MyController implements Initializable {
     	
     	boolean isSelected = SaveRefreshBtn.isSelected();
     	Integer sec = Integer.valueOf(RefreshSecInput.getText());
-    	TimerTask taskRefresh;
-    	Timer timerForRefresh = new Timer();
     	
-
+    	try {
     	if(isSelected ){
-    		flagRefresh=true;
-    		taskRefresh = new RefreshTask();
+    		//timerForRefresh = new Timer();
+    		//taskRefresh = new RefreshTask();
     		timerForRefresh.schedule(taskRefresh, sec*1000, sec*1000);
 
     	} else {
-    		flagRefresh=false;
-    	}
+    		timerForRefresh.cancel();
+    		timerForRefresh.purge();
+    		}
     }
     
-    @SuppressWarnings("null")
+    catch (Exception e)
+    	{
+    	
+    	}
+    	
+    }
+    
+
 	public void checkIfNeedToSendEmail(ActionEvent event)  {
     	boolean isSelected = SaveEmailTimeBtn.isSelected();
     	Integer sec = Integer.valueOf(SendEmailEveryXtimeInput.getText());
-    	TimerTask taskEmails = null;
-    	Timer timerForSendingEmails = new Timer();
+    	//TimerTask taskEmails = null;
+    	//Timer timerForSendingEmails = new Timer();
 
     	if(isSelected ){
-    		flagEmails=true;
+    		//flagEmails=true;
     		taskEmails = new EmailsTask();
+    		timerForSendingEmails = new Timer();
     		timerForSendingEmails.schedule(taskEmails, sec*1000, sec*1000);
     	} else {
-    		flagEmails=false;
+    		timerForSendingEmails.cancel();
+    		//timerForSendingEmails.purge();
     	}
         
     }
@@ -395,9 +414,7 @@ public class MyController implements Initializable {
     	
     	
     	this.uploadedCollection = collectionList; // save json array to class, just in case we need it 
-    	
-    	int max = 100;
-	    int min = 1;
+
 	    
 	    CollectionTable.getItems().clear();	// clear the table before inserting new data from file
 
@@ -408,7 +425,8 @@ public class MyController implements Initializable {
             Long magiceden = (Long)currentCollection.get("Magiceden");
             Double diff = (Double)currentCollection.get("Diff");
             
-            CollectionTable.getItems().add(new NFTCollection(collName, opensea, magiceden, diff.floatValue()));
+            
+            CollectionTable.getItems().add(new NftTableData(collName, opensea.toString(), magiceden.toString(), diff.toString()));
             //System.out.println(collName);
         }
     	
@@ -420,8 +438,7 @@ public class MyController implements Initializable {
 		CollectionTable.getItems().clear();
 		alNftData.add(0, dataBuilder.getOneCollection(txtAddCollection.getText()));
 		for (var nftData : alNftData){
-			float calc = 100 - (100*(nftData.getMagicEdenSol()/nftData.getOpenseaSol()));
-			CollectionTable.getItems().add(new NFTCollection(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  calc));
+			CollectionTable.getItems().add(new NftTableData(nftData.getName(), Long.toString(nftData.getOpenseaSol()), Long.toString(nftData.getMagicEdenSol()),  Double.toString(nftData.getDiff())));
 		}
 		
 		//CollectionTable.setItems(CollectionTable.getItems());
@@ -431,13 +448,31 @@ public class MyController implements Initializable {
 	// Fill the table view with collections from server
 	private void fillTableItems()
 	{
+		String magicPrice, openseaPrice, diff; 
 		dataBuilder = new TableDataBuilder();
 		dataBuilder.buildData();
 		alNftData = dataBuilder.getNftCollection();
 		for (var nftData : alNftData) {
-			float calc = 100 - (100*(nftData.getMagicEdenSol()/nftData.getOpenseaSol()));
-			CollectionTable.getItems().add(new NFTCollection(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  nftData.getDiff()));
+			magicPrice = nftData.getMagicEdenSol() == -1 ? "N/A" : Long.toString(nftData.getMagicEdenSol());
+			openseaPrice = nftData.getOpenseaSol() == -1 ? "N/A" : Long.toString(nftData.getOpenseaSol());
+			if(nftData.getMagicEdenSol() == -1 || nftData.getOpenseaSol() == -1)
+				diff = "-";
+			else 
+				diff = Double.toString(nftData.getDiff()); 
+			CollectionTable.getItems().add(getNftTableDataFromNftCollection(nftData));
 		}
+	}
+	
+	private NftTableData getNftTableDataFromNftCollection(NFTCollection nc)
+	{
+		String magicPrice, openseaPrice, diff; 
+		magicPrice = nc.getMagicEdenSol() == -1 ? "N/A" : Long.toString(nc.getMagicEdenSol());
+		openseaPrice = nc.getOpenseaSol() == -1 ? "N/A" : Long.toString(nc.getOpenseaSol());
+		if(nc.getMagicEdenSol() == -1 || nc.getOpenseaSol() == -1)
+			diff = "-";
+		else 
+			diff = Double.toString(nc.getDiff()); 
+		return new NftTableData(nc.getName(), openseaPrice, magicPrice,  diff);
 	}
 
 }
