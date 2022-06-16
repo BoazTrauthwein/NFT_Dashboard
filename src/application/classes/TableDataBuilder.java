@@ -33,7 +33,10 @@ public class TableDataBuilder {
             floorPriceMagiceden = getMagicedenFloorPrice("https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol);
     		floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
     		
-    		calc = 100 - (100*(floorPriceMagiceden/floorPriceOpensea));
+    		if(floorPriceMagiceden!=-1&&floorPriceOpensea!=-1)
+    			calc = 100 - (100*(floorPriceMagiceden/floorPriceOpensea));
+    		else
+    			calc = -1;
     		alNftCollections.add(new NFTCollection(collName, floorPriceOpensea, floorPriceMagiceden,  calc));
             
             System.out.println("-----------------------------------------------------------------------------------");
