@@ -51,8 +51,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-
+import javafx.scene.input.InputMethodEvent;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -68,7 +67,8 @@ import application.classes.TableDataBuilder;
 
 public class MyController implements Initializable {
 	
-	
+	ArrayList<NFTCollection> alNftData;
+	TableDataBuilder dataBuilder;
 	private JSONArray uploadedCollection; // just in case we need this file for future use
 	
 	int emailThreshold = 10; // default
@@ -131,6 +131,12 @@ public class MyController implements Initializable {
 
     @FXML
     private Button UploadListBtn;
+    
+    @FXML
+    private Button btnSearch;
+    
+    @FXML
+    private TextField txtAddCollection;
 
    
     
@@ -138,7 +144,42 @@ public class MyController implements Initializable {
     private ComboBox<String> ShowXentriesCMB;
     public ObservableList<String> list;
     
+
+    @FXML
+    void searchCollectionFunc2(InputMethodEvent event) {
+    	System.out.println("---");
+    }
     
+    @FXML
+    void searchCollectionFunc(ActionEvent event) {
+    	System.out.println("HAAALLLOOO");
+//    	ObservableList data =  CollectionTable.getItems();
+//    	SearchTextInput.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+//    	            if (oldValue != null && (newValue.length() < oldValue.length())) {
+//    	            	CollectionTable.setItems(data);
+//    	            }
+//    	            String value = newValue.toLowerCase();
+//    	            ObservableList<NFTCollection> subentries = FXCollections.observableArrayList();
+//
+//    	            long count = CollectionTable.getColumns().stream().count();
+//    	            for (int i = 0; i < CollectionTable.getItems().size(); i++) {
+//    	                for (int j = 0; j < count; j++) {
+//    	                    String entry = "" + CollectionTable.getColumns().get(j).getCellData(i);
+//    	                    if (entry.toLowerCase().contains(value)) {
+//    	                        subentries.add(CollectionTable.getItems().get(i));
+//    	                        break;
+//    	                    }
+//    	                }
+//    	            }
+//    	            CollectionTable.setItems(subentries);
+//    	        });
+    	
+    	CollectionTable.getItems().clear();
+    	for (var nftData : alNftData) {
+    		if(nftData.getName().contains(SearchTextInput.getText()))
+    			CollectionTable.getItems().add(nftData);
+    	}
+    }
     
 
      public  class RefreshTask extends TimerTask {
@@ -374,44 +415,29 @@ public class MyController implements Initializable {
         
     }
     
-    public void searchCollectionFunc(ActionEvent event) throws Exception {
-    	String str = "HAAALLLOOO";
-    	ObservableList data =  CollectionTable.getItems();
-    	SearchTextInput.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-    	            if (oldValue != null && (newValue.length() < oldValue.length())) {
-    	            	CollectionTable.setItems(data);
-    	            }
-    	            String value = newValue.toLowerCase();
-    	            ObservableList<NFTCollection> subentries = FXCollections.observableArrayList();
-
-    	            long count = CollectionTable.getColumns().stream().count();
-    	            for (int i = 0; i < CollectionTable.getItems().size(); i++) {
-    	                for (int j = 0; j < count; j++) {
-    	                    String entry = "" + CollectionTable.getColumns().get(j).getCellData(i);
-    	                    if (entry.toLowerCase().contains(value)) {
-    	                        subentries.add(CollectionTable.getItems().get(i));
-    	                        break;
-    	                    }
-    	                }
-    	            }
-    	            CollectionTable.setItems(subentries);
-    	        });
-    }
-    
+    @FXML
     public void addCollectionFunc(ActionEvent event) throws Exception {
+		CollectionTable.getItems().clear();
+		alNftData.add(0, dataBuilder.getOneCollection(txtAddCollection.getText()));
+		for (var nftData : alNftData){
+			float calc = 100 - (100*(nftData.getMagicEdenSol()/nftData.getOpenseaSol()));
+			CollectionTable.getItems().add(new NFTCollection(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  calc));
+		}
 		
-		
+		//CollectionTable.setItems(CollectionTable.getItems());
 	}
     
 	
 	// Fill the table view with collections from server
 	private void fillTableItems()
 	{
-		TableDataBuilder dataBuilder = new TableDataBuilder();
+		dataBuilder = new TableDataBuilder();
 		dataBuilder.buildData();
-		ArrayList<NFTCollection> alNftData = dataBuilder.getNftCollection();
-		for (var nftData : alNftData)
-			CollectionTable.getItems().add(new NFTCollection(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  0));
+		alNftData = dataBuilder.getNftCollection();
+		for (var nftData : alNftData) {
+			float calc = 100 - (100*(nftData.getMagicEdenSol()/nftData.getOpenseaSol()));
+			CollectionTable.getItems().add(new NFTCollection(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  nftData.getDiff()));
+		}
 	}
 
 }
