@@ -116,13 +116,14 @@
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>
-            <TextField layoutX="410.0" layoutY="178.0" style="-fx-background-color: #8aebb1;" />
+            <TextField fx:id="txtAddCollection" layoutX="410.0" layoutY="178.0" style="-fx-background-color: #8aebb1;" />
             <Text fill="#8aebb1" layoutX="186.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
             <Pagination layoutX="550.0" layoutY="457.0" pageCount="10" prefHeight="66.0" prefWidth="199.0" />
+            <Button fx:id="btnSearch" layoutX="749.0" layoutY="141.0" mnemonicParsing="false" onAction="#searchCollectionFunc" text="Search" />
          </children>
       </AnchorPane>
    </bottom>
