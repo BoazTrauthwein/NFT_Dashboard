@@ -22,8 +22,9 @@ public class TableDataBuilder {
 	{
 		String collName, collSymbol;
 		long floorPriceMagiceden, floorPriceOpensea;
+		float calc;
 		
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=5");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             collName = (String)((JSONObject)arrCollection.get(i)).get("name");
@@ -32,11 +33,21 @@ public class TableDataBuilder {
             floorPriceMagiceden = getMagicedenFloorPrice("https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol);
     		floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
     		
-    		alNftCollections.add(new NFTCollection(collName, floorPriceOpensea, floorPriceMagiceden,  0));
+    		calc = 100 - (100*(floorPriceMagiceden/floorPriceOpensea));
+    		alNftCollections.add(new NFTCollection(collName, floorPriceOpensea, floorPriceMagiceden,  calc));
             
             System.out.println("-----------------------------------------------------------------------------------");
             //sleep(500);
         }
+	}
+	
+	public NFTCollection getOneCollection(String collSymbol)
+	{
+		long floorPriceMagiceden = getMagicedenFloorPrice("https://api-mainnet.magiceden.dev/v2/collections/" + collSymbol);
+		long floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
+		
+		float calc = 100 - (100*(floorPriceMagiceden/floorPriceOpensea));
+		return new NFTCollection(collSymbol, floorPriceOpensea, floorPriceMagiceden,  calc);
 	}
 	
     private JSONArray getJSONArray(String urlRequest)
