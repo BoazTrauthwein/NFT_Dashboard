@@ -76,6 +76,14 @@ public class MyController implements Initializable {
 	public  boolean flagRefresh = false;
 	public  boolean flagEmails = false;
 	
+	//TimerTask taskRefresh;
+	//Timer timerForRefresh;
+	TimerTask taskEmails  = new EmailsTask();
+	Timer timerForSendingEmails = new Timer();
+	Timer timerForRefresh = new Timer();
+	TimerTask taskRefresh = new RefreshTask();
+
+	
 	 @FXML private Pagination pagination;
 	    private ObservableList<NFTCollection> masterData = FXCollections.observableArrayList();
 	    private int dataSize;
@@ -145,38 +153,44 @@ public class MyController implements Initializable {
    
     	
         public void run() {
-        	if(flagRefresh) {
+
         		CollectionTable.getItems().clear();
             	initializeCollectionTable();
-        	}
-
-        	
+            	try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         }
     }
     
     public class EmailsTask extends TimerTask {
     
         public void run() {
-        	if(flagEmails) {
         		boolean isSelected = SaveEmailAdressesBtn.isSelected();
             	String emails= EmailsInput.getText();
+
 
             	if(isSelected ){
             		String RecipientList[] = {EmailsInput.getText()};
            		 	JavaEmail.sendMailNow(CollectionTable.getItems().toString(), RecipientList);
-            	   
-            	} else {
+            		//JavaEmail.sendMailNow("hi",RecipientList);
             	   
             	}
-        	}
-        	
-        	
-        	
+
         }
     }
      
+
     
-    
+    public void createMessage()
+    {
+    	StringBuilder Msg = new StringBuilder();
+    	int i =0 ;
+    	
+    	Msg.append(CollectionNames.getCellData(i));
+    }
     
     public void initializeCollectionTable()
     {
@@ -217,33 +231,41 @@ public class MyController implements Initializable {
     	
     	boolean isSelected = SaveRefreshBtn.isSelected();
     	Integer sec = Integer.valueOf(RefreshSecInput.getText());
-    	TimerTask taskRefresh;
-    	Timer timerForRefresh = new Timer();
     	
-
+    	try {
     	if(isSelected ){
-    		flagRefresh=true;
-    		taskRefresh = new RefreshTask();
+    		//timerForRefresh = new Timer();
+    		//taskRefresh = new RefreshTask();
     		timerForRefresh.schedule(taskRefresh, sec*1000, sec*1000);
 
     	} else {
-    		flagRefresh=false;
-    	}
+    		timerForRefresh.cancel();
+    		timerForRefresh.purge();
+    		}
     }
     
-    @SuppressWarnings("null")
+    catch (Exception e)
+    	{
+    	
+    	}
+    	
+    }
+    
+
 	public void checkIfNeedToSendEmail(ActionEvent event)  {
     	boolean isSelected = SaveEmailTimeBtn.isSelected();
     	Integer sec = Integer.valueOf(SendEmailEveryXtimeInput.getText());
-    	TimerTask taskEmails = null;
-    	Timer timerForSendingEmails = new Timer();
+    	//TimerTask taskEmails = null;
+    	//Timer timerForSendingEmails = new Timer();
 
     	if(isSelected ){
-    		flagEmails=true;
+    		//flagEmails=true;
     		taskEmails = new EmailsTask();
+    		timerForSendingEmails = new Timer();
     		timerForSendingEmails.schedule(taskEmails, sec*1000, sec*1000);
     	} else {
-    		flagEmails=false;
+    		timerForSendingEmails.cancel();
+    		//timerForSendingEmails.purge();
     	}
         
     }

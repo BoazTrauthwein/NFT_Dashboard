@@ -71,6 +71,7 @@ public class JavaEmail
         emailProperties.put("mail.smtp.port", "587");
         emailProperties.put("mail.smtp.auth", "true");
         emailProperties.put("mail.smtp.starttls.enable", "true");
+        emailProperties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
         mailSession = Session.getDefaultInstance(emailProperties, null);
     }
  
