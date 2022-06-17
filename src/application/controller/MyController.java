@@ -1,17 +1,8 @@
 package application.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.swing.event.ChangeListener;
-
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -21,26 +12,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-import java.net.URI;
 import java.net.URL;
-import java.net.http.*;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,15 +34,13 @@ import javafx.scene.input.InputMethodEvent;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import application.classes.NFTCollection;
-import application.classes.NftHttpRequest;
 import application.classes.NftTableData;
 import application.classes.TableDataBuilder;
-
+import application.interfaces.*;
 
 
 public class MyController implements Initializable {
@@ -84,6 +60,8 @@ public class MyController implements Initializable {
 	Timer timerForSendingEmails = new Timer();
 	Timer timerForRefresh = new Timer();
 	TimerTask taskRefresh = new RefreshTask();
+    public TaskFactory taskFactory = new TaskFactory();
+
 
 	
 	 @FXML private Pagination pagination;
@@ -175,56 +153,23 @@ public class MyController implements Initializable {
     }
     
 
-     public  class RefreshTask extends TimerTask {
-   
-    	
-        public void run() {
-
-        		CollectionTable.getItems().clear();
-            	initializeCollectionTable();
-            	try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        }
-    }
-    
-    public class EmailsTask extends TimerTask {
-    
-        public void run() {
-        		boolean isSelected = SaveEmailAdressesBtn.isSelected();
-            	String emails= EmailsInput.getText();
-
-
-            	if(isSelected ){
-            		String RecipientList[] = EmailsInput.getText().split(";", -1);
-           		 	JavaEmail.sendMailNow(createMessage(), RecipientList);
-            		//JavaEmail.sendMailNow("hi",RecipientList);
-            	   
-            	}
-
-        }
-    }
-     
-
     
     public String createMessage()
     {
     	// boaztrauthwein@gmail.com
     	StringBuilder msg = new StringBuilder();
     	//String strNum = EmailthresholdInput.getText();
+    	checkEmailThreshold();
     	int  threshold = emailThreshold;
     	int nftSize = alNftData.size();
     	int len = (threshold*nftSize)/100;
 
-    	msg.append("Collection Name" +"\t"+"OpenSea [sol]"+"\t"+"Magic Eden [sol]"+"\t"+"Diff[%]"+ "\n");
+    	msg.append("Collection Name" +"\t\t\t"+"OpenSea [sol]"+"\t\t\t"+"Magic Eden [sol]"+"\t\t\t"+"Diff[%]"+ "\n");
     	msg.append("\n");
     	for (int i = 0; i < len; i++) {
 			NftTableData ntd = getNftTableDataFromNftCollection(alNftData.get(i));
 			msg.append("\n");
-			msg.append(ntd.getName() +"\t"+ ntd.getOpenseaSol()+"\t"+ntd.getMagicEdenSol()+"\t"+ntd.getDiff()+"\n");
+			msg.append(ntd.getName() +"\t\t\t"+ ntd.getOpenseaSol()+"\t\t\t"+ntd.getMagicEdenSol()+"\t\t\t"+ntd.getDiff()+"\n");
     	}
     	
     	return msg.toString();
@@ -273,7 +218,7 @@ public class MyController implements Initializable {
     	try {
     	if(isSelected ){
     		//timerForRefresh = new Timer();
-    		//taskRefresh = new RefreshTask();
+    		taskRefresh = taskFactory.getTask("RefreshTask");
     		timerForRefresh.schedule(taskRefresh, sec*1000, sec*1000);
 
     	} else {
@@ -298,7 +243,7 @@ public class MyController implements Initializable {
 
     	if(isSelected ){
     		//flagEmails=true;
-    		taskEmails = new EmailsTask();
+    		taskEmails = taskFactory.getTask("EmailsTask");
     		timerForSendingEmails = new Timer();
     		timerForSendingEmails.schedule(taskEmails, sec*1000, sec*1000);
     	} else {
@@ -308,7 +253,7 @@ public class MyController implements Initializable {
         
     }
     
-    public void checkEmailThreshold(ActionEvent event)  {
+    public void checkEmailThreshold()  {
     	boolean isSelected = SaveEmailThersholdBtn.isSelected();
 
     	if(isSelected ){
@@ -322,7 +267,6 @@ public class MyController implements Initializable {
     /*public void sendEmails(ActionEvent event)  {
     	boolean isSelected = SaveEmailAdressesBtn.isSelected();
     	String emails= EmailsInput.getText();
-
     	if(isSelected ){
     	   
     	} else {
@@ -474,5 +418,64 @@ public class MyController implements Initializable {
 			diff = Double.toString(nc.getDiff()); 
 		return new NftTableData(nc.getName(), openseaPrice, magicPrice,  diff);
 	}
+	
+	//*********************************** Factory Design Pattern ***********************************
+
+
+	   public class TaskFactory {
+		
+		public TimerTask getTask(String taskType){
+		      if(taskType == null){
+		         return null;
+		      }		
+		      
+		      
+		      if(taskType.equalsIgnoreCase("EmailsTask")){
+		         return  new EmailsTask();
+		         
+		      } else if(taskType.equalsIgnoreCase("RefreshTask")){
+		         return  new RefreshTask();
+		         
+		      } 
+		      
+		      return null;
+		   }
+	}
+	    
+
+	     public  class RefreshTask extends TimerTask implements ITask {
+	   
+	    	
+	        public void run() {
+
+	        		CollectionTable.getItems().clear();
+	            	initializeCollectionTable();
+	            	try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	        }
+	    }
+	    
+	    public class EmailsTask extends TimerTask {
+	    
+	        public void run() {
+	        		boolean isSelected = SaveEmailAdressesBtn.isSelected();
+	            	String emails= EmailsInput.getText();
+
+
+	            	if(isSelected ){
+	            		String RecipientList[] = EmailsInput.getText().split(";", -1);
+	           		 	JavaEmail.sendMailNow(createMessage(), RecipientList);
+	            		//JavaEmail.sendMailNow("hi",RecipientList);
+	            	   
+	            	}
+
+	        }
+	    }
+	     
+
 
 }
