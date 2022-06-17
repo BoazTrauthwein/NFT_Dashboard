@@ -9,31 +9,26 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.MyController">
-   <bottom>
+<BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.MyController">
+   <top>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0" style="-fx-background-color: #636363;" BorderPane.alignment="CENTER">
          <children>
-            <VBox layoutX="143.0" layoutY="252.0" prefHeight="224.0" prefWidth="602.0" style="-fx-background-color: #34eb7d;">
-               <children>
-                  <TableView fx:id="CollectionTable" prefHeight="266.0" prefWidth="602.0" style="-fx-background-color: #d4fae3;">
-                    <columns>
-                      <TableColumn fx:id="CollectionNames" prefWidth="167.0" style="-fx-background-color: #8aebb1;" text="Collection name " />
-                      <TableColumn fx:id="Opensea" prefWidth="113.0" style="-fx-background-color: #80d9a4;" text="Opensea [Sol]" />
-                        <TableColumn fx:id="MagicEden" prefWidth="153.0" style="-fx-background-color: #8aebb1;" text="Magic eden [Sol]" />
-                        <TableColumn fx:id="Diff" prefWidth="168.0" style="-fx-background-color: #80d9a4;" text="Diff [%]" />
-                    </columns>
-                  </TableView>
-               </children>
-            </VBox>
-            <Button fx:id="AddCollectionBtn" layoutX="577.0" layoutY="178.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="25.0" prefWidth="118.0" style="-fx-background-color: #8aebb1;" text="+ Add collection" textFill="#477a5c">
+            <TableView fx:id="CollectionTable" layoutX="157.0" layoutY="223.0" prefHeight="232.0" prefWidth="569.0" style="-fx-background-color: #d4fae3;">
+              <columns>
+                <TableColumn fx:id="CollectionNames" prefWidth="167.0" style="-fx-background-color: #8aebb1;" text="Collection name " />
+                <TableColumn fx:id="Opensea" prefWidth="113.0" style="-fx-background-color: #80d9a4;" text="Opensea [Sol]" />
+                  <TableColumn fx:id="MagicEden" prefWidth="153.0" style="-fx-background-color: #8aebb1;" text="Magic eden [Sol]" />
+                  <TableColumn fx:id="Diff" prefWidth="168.0" style="-fx-background-color: #80d9a4;" text="Diff [%]" />
+              </columns>
+            </TableView>
+            <Button fx:id="AddCollectionBtn" layoutX="577.0" layoutY="159.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="25.0" prefWidth="118.0" style="-fx-background-color: #8aebb1;" text="+ Add collection" textFill="#477a5c">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>
-            <Text fill="#8aebb1" layoutX="277.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="277.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font name="System Bold" size="24.0" />
                </font>
@@ -91,23 +86,23 @@
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text fill="#8aebb1" layoutX="22.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Show" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="22.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Show" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Text fill="#8aebb1" layoutX="383.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search:" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <Text fill="#8aebb1" layoutX="383.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search:" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <ComboBox fx:id="ShowXentriesCMB" layoutX="202.0" layoutY="137.0" onAction="#setShowXentriesCMB" onMouseDragOver="#setShowXentriesCMB" prefHeight="25.0" prefWidth="56.0" style="-fx-background-color: #8aebb1;" />
-            <Text fill="#8aebb1" layoutX="265.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="entries" textAlignment="CENTER" wrappingWidth="70.13671875">
+            <ComboBox fx:id="ShowXentriesCMB" layoutX="202.0" layoutY="118.0" onAction="#setShowXentriesCMB" onMouseDragOver="#setShowXentriesCMB" prefHeight="25.0" prefWidth="56.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="265.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="entries" textAlignment="CENTER" wrappingWidth="70.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <TextField fx:id="SearchTextInput" layoutX="565.0" layoutY="141.0" onAction="#searchCollectionFunc" prefHeight="25.0" prefWidth="176.0" style="-fx-background-color: #8aebb1;" />
+            <TextField fx:id="SearchTextInput" layoutX="565.0" layoutY="122.0" onAction="#searchCollectionFunc" prefHeight="25.0" prefWidth="176.0" style="-fx-background-color: #8aebb1;" />
             <Button fx:id="SaveListBtn" layoutX="791.0" layoutY="334.0" mnemonicParsing="false" onAction="#saveListFunc" prefHeight="42.0" prefWidth="73.0" style="-fx-background-color: #8aebb1;" text="Save List" textAlignment="RIGHT" textFill="#477a5c">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -116,15 +111,15 @@
                <font>
                   <Font name="System Bold" size="12.0" />
                </font></Button>
-            <TextField fx:id="txtAddCollection" layoutX="410.0" layoutY="178.0" style="-fx-background-color: #8aebb1;" />
-            <Text fill="#8aebb1" layoutX="186.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="301.13671875">
+            <TextField fx:id="txtAddCollection" layoutX="410.0" layoutY="159.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="186.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="301.13671875">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
-            <Pagination layoutX="550.0" layoutY="457.0" pageCount="10" prefHeight="66.0" prefWidth="199.0" />
-            <Button fx:id="btnSearch" layoutX="749.0" layoutY="141.0" mnemonicParsing="false" onAction="#searchCollectionFunc" text="Search" />
+            <Pagination fx:id="pagination" layoutX="152.0" layoutY="220.0" pageCount="10" prefHeight="281.0" prefWidth="583.0" />
+            <Button fx:id="btnSearch" layoutX="749.0" layoutY="122.0" mnemonicParsing="false" onAction="#searchCollectionFunc" text="Search" />
          </children>
       </AnchorPane>
-   </bottom>
+   </top>
 </BorderPane>
