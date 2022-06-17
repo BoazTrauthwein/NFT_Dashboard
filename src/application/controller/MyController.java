@@ -1,18 +1,12 @@
 package application.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.event.ChangeListener;
-
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -21,26 +15,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-import java.net.URI;
 import java.net.URL;
-import java.net.http.*;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,16 +33,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.InputMethodEvent;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import application.classes.NFTCollection;
-import application.classes.NftHttpRequest;
 import application.classes.NftTableData;
 import application.classes.TableDataBuilder;
 
@@ -70,10 +47,12 @@ import application.classes.TableDataBuilder;
 public class MyController implements Initializable {
 	
 	ArrayList<NFTCollection> alNftData;
+	ArrayList<NftTableData> alNftTableData;
 	TableDataBuilder dataBuilder;
 	private JSONArray uploadedCollection; // just in case we need this file for future use
 	
 	int emailThreshold = 10; // default
+	int from = 0, to = 0, itemPerPage;
 
 	public  boolean flagRefresh = false;
 	public  boolean flagEmails = false;
@@ -86,7 +65,7 @@ public class MyController implements Initializable {
 	TimerTask taskRefresh = new RefreshTask();
 
 	
-	 @FXML private Pagination pagination;
+	@FXML private Pagination pagination;
 	    private ObservableList<NFTCollection> masterData = FXCollections.observableArrayList();
 	    private int dataSize;
 	    private int rowsPerPage = 5;
@@ -154,11 +133,6 @@ public class MyController implements Initializable {
     private ComboBox<String> ShowXentriesCMB;
     public ObservableList<String> list;
     
-
-    @FXML
-    void searchCollectionFunc2(InputMethodEvent event) {
-    	System.out.println("---");
-    }
     
     @FXML
     void searchCollectionFunc(ActionEvent event) {
@@ -169,9 +143,6 @@ public class MyController implements Initializable {
     			CollectionTable.getItems().add(getNftTableDataFromNftCollection(nftData));
     	}
     	
-    	
-		
-
     }
     
 
@@ -239,6 +210,9 @@ public class MyController implements Initializable {
         CollectionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
 		fillTableItems();
+		
+		
+		
     }
     
     public void initializeCmxList()
@@ -249,10 +223,12 @@ public class MyController implements Initializable {
 		cmxList.add("50");
 		cmxList.add("100");
 
-		
 		list = FXCollections.observableArrayList(cmxList);
 		ShowXentriesCMB.setItems(list);
 		ShowXentriesCMB.setPromptText(list.get(0).toString());
+		itemPerPage = Integer.parseInt(list.get(0).toString());
+		
+		
     }
     
     @Override
@@ -261,8 +237,11 @@ public class MyController implements Initializable {
     	
     	initializeCollectionTable();
     	initializeCmxList();
-//    	printTestText();
     	
+    	int numOfPages = alNftData.size() / Integer.parseInt(list.get(0).toString()) + 1;
+		pagination.setPageCount(numOfPages);
+//    	pagination = new Pagination(numOfPages, 0);
+		pagination.setPageFactory(this::createPage);
     }
     
     public void checkRefresh(ActionEvent event)  {
@@ -333,8 +312,11 @@ public class MyController implements Initializable {
     */
     
     public void setShowXentriesCMB(ActionEvent event) throws Exception {
-    
-
+    	itemPerPage = Integer.parseInt(ShowXentriesCMB.getValue());
+    	int numOfPages = alNftData.size() / itemPerPage + 1;
+		pagination.setPageCount(numOfPages);
+    	System.out.println(ShowXentriesCMB.getValue());
+    	
 	}
     // Save a JSON file out of table of collections
     public void saveListFunc(ActionEvent event)  {  
@@ -452,14 +434,16 @@ public class MyController implements Initializable {
 		dataBuilder = new TableDataBuilder();
 		dataBuilder.buildData();
 		alNftData = dataBuilder.getNftCollection();
+		alNftTableData = new ArrayList<NftTableData>();
+//		for (var nftData : alNftData) {
+//			CollectionTable.getItems().add(getNftTableDataFromNftCollection(nftData));
+//		}
+	}
+	
+	private void convertNftCollectionListToNftTableDataList(){
+		alNftTableData = new ArrayList<NftTableData>();
 		for (var nftData : alNftData) {
-			magicPrice = nftData.getMagicEdenSol() == -1 ? "N/A" : Long.toString(nftData.getMagicEdenSol());
-			openseaPrice = nftData.getOpenseaSol() == -1 ? "N/A" : Long.toString(nftData.getOpenseaSol());
-			if(nftData.getMagicEdenSol() == -1 || nftData.getOpenseaSol() == -1)
-				diff = "-";
-			else 
-				diff = Double.toString(nftData.getDiff()); 
-			CollectionTable.getItems().add(getNftTableDataFromNftCollection(nftData));
+			alNftTableData.add(getNftTableDataFromNftCollection(nftData));
 		}
 	}
 	
@@ -473,6 +457,18 @@ public class MyController implements Initializable {
 		else 
 			diff = Double.toString(nc.getDiff()); 
 		return new NftTableData(nc.getName(), openseaPrice, magicPrice,  diff);
+	}
+	
+	private Node createPage(int pageIndex) {
+		from = pageIndex * itemPerPage;
+		convertNftCollectionListToNftTableDataList();
+		to = Math.min((from + itemPerPage), alNftTableData.size());
+		
+		CollectionTable.setItems(FXCollections.observableArrayList(alNftTableData.subList(from, to)));
+//		List<NftTableData> lst = createData();
+//		CollectionTable.setItems(FXCollections.observableArrayList(lst));
+//		CollectionTable.setItems(FXCollections.observableList(lst));
+		return CollectionTable;
 	}
 
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.TestingController">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pagination fx:id="tblPagination" layoutX="25.0" layoutY="10.0" prefHeight="366.0" prefWidth="554.0" />
+            <TableView fx:id="tblView" layoutX="93.0" layoutY="59.0" prefHeight="268.0" prefWidth="414.0">
+              <columns>
+                <TableColumn fx:id="tblCol1" prefWidth="75.0" text="C1" />
+                <TableColumn fx:id="tblCol2" prefWidth="75.0" text="C2" />
+                  <TableColumn fx:id="tblCol3" prefWidth="75.0" text="C3" />
+                  <TableColumn fx:id="tblCol4" prefWidth="75.0" text="C4" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

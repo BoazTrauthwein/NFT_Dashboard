@@ -12,7 +12,7 @@ public class TableDataBuilder {
 	private NftHttpRequest request;
 	
 	public TableDataBuilder() {
-		request = new NftHttpRequest();
+		request = NftHttpRequest.getInstance();
 		alNftCollections = new ArrayList<NFTCollection>();
 	}
 	
@@ -24,7 +24,7 @@ public class TableDataBuilder {
 		long floorPriceMagiceden, floorPriceOpensea;
 		float calc;
 		
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=5");
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=12");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             collName = (String)((JSONObject)arrCollection.get(i)).get("name");
