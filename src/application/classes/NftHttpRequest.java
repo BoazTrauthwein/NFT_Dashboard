@@ -7,6 +7,17 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class NftHttpRequest {
+	private final static NftHttpRequest _instance = new NftHttpRequest();
+	
+	private NftHttpRequest(){
+		
+	}
+	
+	public static NftHttpRequest getInstance()
+	{
+		return _instance;
+	}
+	
 	public String getRequest(String urlRequest)
 	{
     	HttpRequest request = HttpRequest.newBuilder()
