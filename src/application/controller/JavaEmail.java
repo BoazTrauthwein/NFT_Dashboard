@@ -32,6 +32,7 @@ public class JavaEmail
         javaEmail.setTitle("NFT_DASHBOARD");
         javaEmail.setRecipients(EmailRecipient);
         javaEmail.setMessage(msg);
+        
         try {
 			javaEmail.draftEmailMessage();
 		} catch (AddressException e) {
@@ -92,7 +93,9 @@ public class JavaEmail
         /**
          * If sending HTML mail
          * */
-        emailMessage.setContent(emailBody, "text/html");
+       // emailMessage.setContent(emailBody, "text/html");
+        emailMessage.setContent(emailBody,  "text/plain; charset=UTF-8");
+        //msg.setContent(message, "text/plain; charset=UTF-8");
         /**
          * If sending only text mail
          * */
