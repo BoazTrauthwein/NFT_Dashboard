@@ -27,7 +27,7 @@ public class TableDataBuilder implements IBuilder{
 		long floorPriceMagiceden, floorPriceOpensea;
 		float calc;
 		
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=100");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             //collName = (String)((JSONObject)arrCollection.get(i)).get("name");
