@@ -6,8 +6,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-public class TableDataBuilder {
+import application.interfaces.IBuilder;
 
+public class TableDataBuilder implements IBuilder{
+	
 	private ArrayList<NFTCollection> alNftCollections;
 	private NftHttpRequest request;
 	JSONObject objSymbolMagiceden;
@@ -25,7 +27,7 @@ public class TableDataBuilder {
 		long floorPriceMagiceden, floorPriceOpensea;
 		float calc;
 		
-		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=3");
+		JSONArray arrCollection = getJSONArray("https://api-mainnet.magiceden.dev/v2/collections?offset=0&limit=10");
 
         for (int i = 0; i < arrCollection.size(); i++) {
             //collName = (String)((JSONObject)arrCollection.get(i)).get("name");
@@ -37,12 +39,12 @@ public class TableDataBuilder {
     		floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
     		
     		if(floorPriceMagiceden!=-1&&floorPriceOpensea!=-1)
-    			calc = 100 - (100*(floorPriceMagiceden/floorPriceOpensea));
+    			calc = 100 - (100*((float)floorPriceMagiceden/floorPriceOpensea));
     		else
     			calc = -1;
     		alNftCollections.add(new NFTCollection(collName, collSymbol, floorPriceOpensea, floorPriceMagiceden,  calc));
             
-            System.out.println("-----------------------------------------------------------------------------------");
+            System.out.println((i + 1) + ") -----------------------------------------------------------------------------------");
             //sleep(500);
         }
 	}
@@ -54,19 +56,21 @@ public class TableDataBuilder {
 		long floorPriceMagiceden = getMagicedenFloorPrice();
 		long floorPriceOpensea = getOpenseaFloorPrice("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats", collSymbol);
 		
-		float calc = 100 - (100*(floorPriceMagiceden/floorPriceOpensea));
+		float calc = 100 - (100*((float)floorPriceMagiceden/floorPriceOpensea));
 		alNftCollections.add(0, new NFTCollection(collName, collSymbol, floorPriceOpensea, floorPriceMagiceden,  calc));
 	}
 	
 	public void refreshData()
 	{
 		ArrayList<String> alNftSymbols = new ArrayList<String>();
+		System.out.println("-------- Update --------");
 		for (var nftData : alNftCollections){
 			alNftSymbols.add(nftData.getSymbol());
 		}
 		alNftCollections = new ArrayList<NFTCollection>();
-		for (var collSymbol : alNftSymbols){
-			addOneCollection(collSymbol);
+//		for (var collSymbol : alNftSymbols){
+		for(int i = alNftSymbols.size()-1; i>=0; --i) {
+			addOneCollection(alNftSymbols.get(i));
 		}
 	}
 	
@@ -127,20 +131,11 @@ public class TableDataBuilder {
         	JSONObject joValue = getJSONObject("https://api.opensea.io/api/v1/collection/" + collSymbol.replace('_', '-') + "/stats");
     		JSONObject joStats = (JSONObject)joValue.get("stats");
     		double dPrice = (double)joStats.get("floor_price");
-    		floorPrice = (long)(dPrice * 1000000000);
+    		floorPrice = (long)(dPrice * 100000000000L);
 		} catch (Exception e) {
 			floorPrice = -1;
 		}
         return floorPrice;
-	}
-	
-	private void sleep(int miliseconds)
-	{
-		try {
-		    Thread.sleep(miliseconds);
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
-		}
 	}
 	
 }

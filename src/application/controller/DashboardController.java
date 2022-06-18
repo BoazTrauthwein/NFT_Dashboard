@@ -45,7 +45,7 @@ import application.classes.TableDataBuilder;
 import application.interfaces.*;
 
 
-public class MyController implements Initializable {
+public class DashboardController implements Initializable {
 	
 	ArrayList<NFTCollection> alNftData;
 	ArrayList<NftTableData> alNftTableData;
@@ -66,12 +66,8 @@ public class MyController implements Initializable {
 	TimerTask taskRefresh = new RefreshTask();
     public TaskFactory taskFactory = new TaskFactory();
 
-
-	
-	@FXML private Pagination pagination;
-	    private ObservableList<NFTCollection> masterData = FXCollections.observableArrayList();
-	    private int dataSize;
-	    private int rowsPerPage = 5;
+	@FXML 
+	private Pagination pagination;
 
     @FXML
     private TableView<NftTableData> CollectionTable;
@@ -203,6 +199,15 @@ public class MyController implements Initializable {
 		
 		
     }
+    public void initializePagination(){
+    	int numOfPages;
+    	if( alNftData.size() % Integer.parseInt(list.get(0).toString()) == 0)
+    		numOfPages = alNftData.size() / Integer.parseInt(list.get(0).toString());
+    	else
+    		numOfPages = alNftData.size() / Integer.parseInt(list.get(0).toString())+1;
+		pagination.setPageCount(numOfPages);
+		pagination.setPageFactory(this::createPage);
+    }
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -210,11 +215,8 @@ public class MyController implements Initializable {
     	
     	initializeCollectionTable();
     	initializeCmxList();
-    	
-    	int numOfPages = alNftData.size() / Integer.parseInt(list.get(0).toString()) + 1;
-		pagination.setPageCount(numOfPages);
-//    	pagination = new Pagination(numOfPages, 0);
-		pagination.setPageFactory(this::createPage);
+    	initializePagination();
+
     }
     
     public void checkRefresh(ActionEvent event)  {
@@ -271,21 +273,13 @@ public class MyController implements Initializable {
         
     }
     
-    /*public void sendEmails(ActionEvent event)  {
-    	boolean isSelected = SaveEmailAdressesBtn.isSelected();
-    	String emails= EmailsInput.getText();
-    	if(isSelected ){
-    	   
-    	} else {
-    	   
-    	}
-        
-    }
-    */
-    
     public void setShowXentriesCMB(ActionEvent event) throws Exception {
+    	int numOfPages;
     	itemPerPage = Integer.parseInt(ShowXentriesCMB.getValue());
-    	int numOfPages = alNftData.size() / itemPerPage + 1;
+    	if(alNftData.size() % itemPerPage == 0)
+    		numOfPages = alNftData.size() / itemPerPage;
+    	else
+    		numOfPages = alNftData.size() / itemPerPage + 1;
 		pagination.setPageCount(numOfPages);
     	System.out.println(ShowXentriesCMB.getValue());
     	
@@ -375,12 +369,12 @@ public class MyController implements Initializable {
         for (int i = 0; i < this.uploadedCollection.size(); i++) { // loop on collection list to get items for display
         	JSONObject currentCollection = ((JSONObject)this.uploadedCollection.get(i));
             String collName = (String)currentCollection.get("Name");
-            Long opensea = (Long)currentCollection.get("Opensea");
-            Long magiceden = (Long)currentCollection.get("Magiceden");
-            Double diff = (Double)currentCollection.get("Diff");
+            String opensea = (String)currentCollection.get("Opensea");
+            String magiceden = (String)currentCollection.get("Magiceden");
+            String diff = (String)currentCollection.get("Diff");
             
             
-            CollectionTable.getItems().add(new NftTableData(collName, opensea.toString(), magiceden.toString(), diff.toString()));
+            CollectionTable.getItems().add(new NftTableData(collName, opensea, magiceden, diff));
             //System.out.println(collName);
         }
     	
@@ -401,22 +395,17 @@ public class MyController implements Initializable {
 		for (var nftData : alNftTableData){
 			CollectionTable.getItems().add(new NftTableData(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  nftData.getDiff()));
 		}
-		
-		//CollectionTable.setItems(CollectionTable.getItems());
+		initializePagination();
 	}
     
 	
 	// Fill the table view with collections from server
 	private void fillTableItems()
 	{
-		String magicPrice, openseaPrice, diff; 
 		dataBuilder = new TableDataBuilder();
 		dataBuilder.buildData();
 		alNftData = dataBuilder.getNftCollection();
 		alNftTableData = new ArrayList<NftTableData>();
-//		for (var nftData : alNftData) {
-//			CollectionTable.getItems().add(getNftTableDataFromNftCollection(nftData));
-//		}
 	}
 	
 	private void convertNftCollectionListToNftTableDataList(){
@@ -446,9 +435,6 @@ public class MyController implements Initializable {
 		to = Math.min((from + itemPerPage), alNftTableData.size());
 		
 		CollectionTable.setItems(FXCollections.observableArrayList(alNftTableData.subList(from, to)));
-//		List<NftTableData> lst = createData();
-//		CollectionTable.setItems(FXCollections.observableArrayList(lst));
-//		CollectionTable.setItems(FXCollections.observableList(lst));
 		return CollectionTable;
 	}
 	
@@ -483,28 +469,23 @@ public class MyController implements Initializable {
 	        public void run() {
 
 	        		CollectionTable.getItems().clear();
-	            	initializeCollectionTable();
-	            	try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+	        		dataBuilder.refreshData();
+	        		alNftData = dataBuilder.getNftCollection();
+	        		convertNftCollectionListToNftTableDataList();
+	        		CollectionTable.setItems(FXCollections.observableArrayList(alNftTableData));
+	        		
 	        }
 	    }
 	    
 	    public class EmailsTask extends TimerTask {
 	    
 	        public void run() {
+	        	
 	        		boolean isSelected = SaveEmailAdressesBtn.isSelected();
-	            	String emails= EmailsInput.getText();
-
-
 	            	if(isSelected ){
 	            		String RecipientList[] = EmailsInput.getText().split(";", -1);
-	           		 	JavaEmail.sendMailNow(createMessage(), RecipientList);
-	            		//JavaEmail.sendMailNow("hi",RecipientList);
-	            	   
+	           		 	JavaEmail.sendMailNow(createMessage(), RecipientList);	
+	           		 	
 	            	}
 
 	        }
