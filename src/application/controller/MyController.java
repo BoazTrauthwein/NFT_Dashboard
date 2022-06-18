@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -128,6 +129,9 @@ public class MyController implements Initializable {
     
     @FXML
     private TextField txtAddCollection;
+    
+    @FXML
+    private Label lblSearchError;
 
    
     
@@ -386,9 +390,16 @@ public class MyController implements Initializable {
     @FXML
     public void addCollectionFunc(ActionEvent event) throws Exception {
 		CollectionTable.getItems().clear();
-		alNftData.add(0, dataBuilder.getOneCollection(txtAddCollection.getText()));
-		for (var nftData : alNftData){
-			CollectionTable.getItems().add(new NftTableData(nftData.getName(), Long.toString(nftData.getOpenseaSol()), Long.toString(nftData.getMagicEdenSol()),  Double.toString(nftData.getDiff())));
+		lblSearchError.setText("");
+		try {
+			dataBuilder.addOneCollection(txtAddCollection.getText());
+		}catch (Exception e) {
+			lblSearchError.setText("Collection doesn't exists!");
+		}
+		alNftData = dataBuilder.getNftCollection();
+		convertNftCollectionListToNftTableDataList();
+		for (var nftData : alNftTableData){
+			CollectionTable.getItems().add(new NftTableData(nftData.getName(), nftData.getOpenseaSol(), nftData.getMagicEdenSol(),  nftData.getDiff()));
 		}
 		
 		//CollectionTable.setItems(CollectionTable.getItems());
