@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,31 +13,122 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.DashboardController">
-   <left>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+<BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.DashboardController">
+   <top>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="934.0" style="-fx-background-color: #636363;" BorderPane.alignment="CENTER">
          <children>
-            <Text layoutX="221.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Top 100 NFT Collections" textAlignment="CENTER" wrappingWidth="468.0">
+            <TableView fx:id="CollectionTable" layoutX="127.0" layoutY="223.0" prefHeight="232.0" prefWidth="654.0" style="-fx-background-color: #d4fae3;">
+              <columns>
+                <TableColumn fx:id="CollectionNames" prefWidth="167.0" style="-fx-background-color: #8aebb1;" text="Collection name " />
+                <TableColumn fx:id="Opensea" prefWidth="147.99993896484375" style="-fx-background-color: #80d9a4;" text="Opensea [Sol]" />
+                  <TableColumn fx:id="MagicEden" prefWidth="160.800048828125" style="-fx-background-color: #8aebb1;" text="Magic eden [Sol]" />
+                  <TableColumn fx:id="Diff" prefWidth="175.199951171875" style="-fx-background-color: #80d9a4;" text="Diff [%]" />
+              </columns>
+            </TableView>
+            <Button fx:id="AddCollectionBtn" layoutX="433.0" layoutY="158.0" mnemonicParsing="false" onAction="#addCollectionFunc" prefHeight="26.0" prefWidth="57.0" style="-fx-background-color: #8aebb1;" text="+ Add" textFill="#477a5c">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Text fill="#8aebb1" layoutX="277.0" layoutY="215.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Floor Price" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="233.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Top 100 NFT Collections" textAlignment="CENTER" wrappingWidth="468.13671875">
                <font>
                   <Font name="System Bold" size="36.0" />
                </font>
             </Text>
-            <ComboBox fx:id="cbRowsPerPage" layoutX="142.0" layoutY="91.0" onAction="#setRowsPerPage" prefHeight="26.0" prefWidth="79.0" />
-            <TextField fx:id="tfSearchCollection" layoutX="631.0" layoutY="125.0" />
-            <TextField fx:id="tfAddCollection" layoutX="141.0" layoutY="125.0" />
-            <Button fx:id="btnAddCollection" layoutX="297.0" layoutY="125.0" mnemonicParsing="false" onAction="#addCollectionToTableView" text="+ Add" />
-            <TableView fx:id="tblCollection" layoutX="142.0" layoutY="153.0" prefHeight="293.0" prefWidth="694.0">
-              <columns>
-                <TableColumn fx:id="tcCollectionName" prefWidth="156.00006103515625" text="Collection name " />
-                <TableColumn fx:id="tcOpensea" minWidth="5.60003662109375" prefWidth="191.99993896484375" text="Opensea [Sol]" />
-                  <TableColumn fx:id="tcMagicEden" prefWidth="163.20001220703125" text="Magic eden [Sol]" />
-                  <TableColumn fx:id="tcDiff" prefWidth="183.199951171875" text="Diff [%]" />
-              </columns>
-            </TableView>
-            <Button fx:id="btnSearch" layoutX="784.0" layoutY="125.0" mnemonicParsing="false" onAction="#searchCollectionInTableView" text="Search" />
-            <Pagination fx:id="pagTableView" layoutX="143.0" layoutY="419.0" prefHeight="74.0" prefWidth="694.0" />
+            <CheckBox fx:id="SaveEmailTimeBtn" layoutX="657.0" layoutY="601.0" mnemonicParsing="false" onAction="#checkIfNeedToSendEmail" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveEmailThersholdBtn" layoutX="657.0" layoutY="631.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveEmailAdressesBtn" layoutX="657.0" layoutY="661.0" mnemonicParsing="false" text="Save" textFill="#8aebb1" />
+            <CheckBox fx:id="SaveRefreshBtn" layoutX="657.0" layoutY="571.0" mnemonicParsing="false" onAction="#checkRefresh" text="Save" textFill="#8aebb1" />
+            <Text fill="#8aebb1" layoutX="342.0" layoutY="553.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="107.0" layoutY="588.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Refresh collection floor price every" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="105.0" layoutY="619.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Check if need to send email every" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="35.0" layoutY="650.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email threshold" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="30.0" layoutY="682.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Send emails to" textAlignment="CENTER" wrappingWidth="301.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <TextField fx:id="EmailsInput" layoutX="259.0" layoutY="663.0" prefHeight="25.0" prefWidth="386.0" style="-fx-background-color: #8aebb1;" />
+            <TextField fx:id="RefreshSecInput" layoutX="408.0" layoutY="570.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="447.0" layoutY="589.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <TextField fx:id="SendEmailEveryXtimeInput" layoutX="408.0" layoutY="602.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="447.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="sec" textAlignment="CENTER" wrappingWidth="45.999999999999886">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <TextField fx:id="EmailthresholdInput" layoutX="256.0" layoutY="631.0" prefHeight="25.0" prefWidth="34.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="292.0" layoutY="650.0" strokeType="OUTSIDE" strokeWidth="0.0" text="percent" textAlignment="CENTER" wrappingWidth="86.99999999999989">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="71.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Show" textAlignment="CENTER" wrappingWidth="181.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Text fill="#8aebb1" layoutX="408.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Search:" textAlignment="CENTER" wrappingWidth="203.53668212890625">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <ComboBox fx:id="ShowXentriesCMB" layoutX="192.0" layoutY="118.0" onAction="#setShowXentriesCMB" onMouseDragOver="#setShowXentriesCMB" prefHeight="26.0" prefWidth="62.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="257.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Entries" textAlignment="CENTER" wrappingWidth="70.13671875">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <TextField fx:id="SearchTextInput" layoutX="548.0" layoutY="122.0" onAction="#searchCollectionFunc" prefHeight="25.0" prefWidth="176.0" style="-fx-background-color: #8aebb1;" />
+            <Button fx:id="SaveListBtn" layoutX="122.0" layoutY="500.0" mnemonicParsing="false" onAction="#saveListFunc" prefHeight="26.0" prefWidth="79.0" style="-fx-background-color: #8aebb1;" text="Save List" textAlignment="RIGHT" textFill="#477a5c">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="UploadListBtn" layoutX="704.0" layoutY="501.0" mnemonicParsing="false" onAction="#uploadListFunc" style="-fx-background-color: #8aebb1;" text="Upload List" textFill="#477a5c">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <TextField fx:id="txtAddCollection" layoutX="277.0" layoutY="159.0" style="-fx-background-color: #8aebb1;" />
+            <Text fill="#8aebb1" layoutX="118.0" layoutY="179.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection name:" textAlignment="CENTER" wrappingWidth="176.33673095703125">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Pagination fx:id="pagination" layoutX="122.0" layoutY="220.0" pageCount="10" prefHeight="282.0" prefWidth="664.0" />
+            <Button fx:id="btnSearch" layoutX="729.0" layoutY="122.0" mnemonicParsing="false" onAction="#searchCollectionFunc" style="-fx-background-color: #8aebb1;" text="Search" textFill="#477a5c">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Label fx:id="lblSearchError" layoutX="510.0" layoutY="163.0" textFill="#ff3131">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
-   </left>
+   </top>
 </BorderPane>
